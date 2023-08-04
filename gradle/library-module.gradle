@@ -1,0 +1,53 @@
+apply plugin: 'java-library'
+
+apply from: "$rootDir/gradle/publications.gradle"
+
+dependencies {
+}
+
+jar {
+    manifest.attributes['Implementation-Version'] = project.version
+    manifest.attributes['Implementation-Title'] = project.archivesBaseName
+    manifest.attributes['Automatic-Module-Name'] = project.archivesBaseName.replace('-', '.')
+    manifest.attributes['Created-By'] = "${System.getProperty('java.version')} (${System.getProperty('java.specification.vendor')})"
+}
+
+normalization {
+    runtimeClasspath {
+        ignore 'META-INF/MANIFEST.MF'
+    }
+}
+
+javadoc {
+    options.use = true
+    options.author = true
+    options.encoding = 'UTF-8'
+    options.header = project.archivesBaseName
+    options.memberLevel = JavadocMemberLevel.PROTECTED
+
+    options.addStringOption('Xdoclint:none', '-quiet')
+
+    logging.captureStandardError LogLevel.INFO
+    logging.captureStandardOutput LogLevel.INFO
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveClassifier.set('sources')
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    archiveClassifier.set('javadoc')
+    from javadoc
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId project.archivesBaseName
+            from components.java
+            artifact javadocJar
+        }
+    }
+}

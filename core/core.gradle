@@ -1,0 +1,16 @@
+description = 'job-core'
+archivesBaseName = 'job-core'
+
+apply from: "$rootDir/gradle/library-module.gradle"
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api'
+
+    implementation 'commons-io:commons-io'
+    implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}

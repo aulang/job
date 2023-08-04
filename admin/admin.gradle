@@ -1,0 +1,45 @@
+description = 'job-admin'
+archivesBaseName = 'job-admin'
+
+apply plugin: 'org.springframework.boot'
+apply from: "$rootDir/gradle/docker.gradle"
+
+dependencies {
+    implementation(project(':core'))
+
+    implementation 'cn.aulang.common:al-web'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    implementation 'com.github.ben-manes.caffeine:caffeine'
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    implementation 'commons-io:commons-io'
+    implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'cn.hutool:hutool-crypto'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.postgresql:postgresql:42.6.0'
+    implementation 'org.mongodb:mongo-java-driver:3.12.13'
+    implementation 'com.oracle.database.jdbc:ojdbc11:23.2.0.0'
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
+    implementation 'com.microsoft.sqlserver:mssql-jdbc:11.2.3.jre17'
+}
+
+tasks.register("bootRunDev") {
+    group = "application"
+    description = "Runs the Spring Boot application with the dev profile"
+    doFirst {
+        tasks.bootRun.configure {
+            systemProperty("spring.profiles.active", "dev")
+        }
+    }
+    finalizedBy("bootRun")
+}

@@ -1,0 +1,20 @@
+description = 'job-spring-boot-starter'
+archivesBaseName = 'job-spring-boot-starter'
+
+apply from: "$rootDir/gradle/library-module.gradle"
+
+dependencies {
+    api(project(':core'))
+
+    implementation 'net.java.dev.jna:jna'
+
+    implementation 'commons-io:commons-io'
+    implementation 'org.apache.commons:commons-lang3'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}

@@ -1,0 +1,21 @@
+# Eclipse project files
+.project
+.classpath
+.settings
+
+# IntelliJ IDEA project files and directories
+.idea/
+
+# Gradle work files
+.gradle
+
+# Build targets
+target
+build
+out
+
+# Mac-specific directory that no other operating system needs.
+.DS_Store
+
+# exclude vscode files
+.vscode/

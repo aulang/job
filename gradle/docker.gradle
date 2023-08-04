@@ -1,0 +1,21 @@
+apply plugin: 'com.google.cloud.tools.jib'
+
+jib {
+    def base_name = bootJar.archiveBaseName.getOrNull()
+    def base_version = bootJar.archiveVersion.getOrNull()
+    from {
+        image = 'amazoncorretto:17-alpine'
+    }
+    to {
+        image = "$docker_registry/$rootProject.name/$base_name"
+        auth {
+            username = "$docker_registry_username"
+            password = "$docker_registry_password"
+        }
+    }
+    container {
+        jvmFlags = ['-Xms512m', '-Duser.timezone=GMT+08']
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+    }
+    allowInsecureRegistries = true
+}

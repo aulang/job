@@ -1,0 +1,109 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'org.springframework.boot' version '3.1.2' apply false
+    id 'io.spring.dependency-management' version '1.1.2' apply false
+    id 'com.google.cloud.tools.jib' version '3.3.2' apply false
+}
+
+ext {
+    set('springCloudVersion', '2022.0.3')
+    javaProjects = subprojects.findAll { it.childProjects.isEmpty() }
+}
+
+allprojects {
+
+    group = 'cn.aulang.job'
+    version = '1.0.0'
+
+    buildDir = "$rootDir/build/" + outputDir(project)
+
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.junit:junit-bom:5.10.0'
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+
+        dependencies {
+            dependencySet(group: 'org.slf4j', version: '2.0.7') {
+                entry 'slf4j-api'
+                entry 'jcl-over-slf4j'
+            }
+
+            dependencySet(group: 'com.fasterxml.jackson.core', version: '2.15.2') {
+                entry 'jackson-core'
+                entry 'jackson-databind'
+                entry 'jackson-annotations'
+            }
+
+            dependency 'commons-io:commons-io:2.13.0'
+            dependency 'org.apache.commons:commons-lang3:3.12.0'
+
+            dependency 'com.github.ben-manes.caffeine:caffeine:3.1.7'
+
+            dependency 'org.projectlombok:lombok:1.18.28'
+
+            dependency 'net.java.dev.jna:jna:5.13.0'
+            dependency 'cn.hutool:hutool-crypto:5.8.20'
+
+            dependency 'cn.aulang.common:al-web:1.0.0'
+        }
+    }
+
+    repositories {
+        repositories {
+            maven {
+                url 'https://maven.aliyun.com/repository/public'
+            }
+            maven {
+                url "$maven_registry_release_url"
+                credentials {
+                    username "$maven_registry_username"
+                    password "$maven_registry_password"
+                }
+            }
+            maven {
+                url "$maven_registry_snapshot_url"
+                credentials {
+                    username "$maven_registry_username"
+                    password "$maven_registry_password"
+                }
+            }
+        }
+        mavenLocal()
+        mavenCentral()
+    }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            cacheChangingModulesFor 0, 'seconds'
+            cacheDynamicVersionsFor 0, 'seconds'
+        }
+    }
+}
+
+configure(javaProjects) { project ->
+    apply plugin: 'java'
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    test {
+        useJUnitPlatform()
+    }
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+}
+
+static def outputDir(Project project) {
+    String parentPath = project == project.rootProject || project.parent == project.rootProject ? '' : project.parent.name + '/'
+    project.parent == null ? project.name : parentPath + project.name
+}
