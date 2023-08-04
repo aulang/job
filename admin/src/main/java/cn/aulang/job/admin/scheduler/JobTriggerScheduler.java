@@ -124,11 +124,11 @@ public class JobTriggerScheduler implements DisposableBean {
 
             try {
                 // 输出日志
-                logger.info("Get job from DelayQueue, Prepare to trigger the job, job info: {}", delayJob.getJobInfo());
+                logger.info("Get job from DelayQueue, Prepare to trigger the job, job info: {}", delayJob.jobInfo());
                 // 真正触发任务执行
-                triggerService.trigger(delayJob.getJobInfo());
+                triggerService.trigger(delayJob.jobInfo());
             } catch (Exception e) {
-                logger.error(delayJob.getJobInfo().toString() + " trigger fail", e);
+                logger.error(delayJob.jobInfo().toString() + " trigger fail", e);
             }
         }
     }

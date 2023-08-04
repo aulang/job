@@ -432,7 +432,7 @@ public class BaseStructureParser implements DatabaseStructureParser {
         List<Column> columns = getColumns(tableName)
                 .parallelStream()
                 .filter(e -> e.getIsPrimaryKey() != null && e.getIsPrimaryKey())
-                .collect(Collectors.toList());
+                .toList();
 
         if (columns.isEmpty()) {
             throw new JobException("No identity found");

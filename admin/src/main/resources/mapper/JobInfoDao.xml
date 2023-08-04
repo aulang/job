@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.aulang.job.admin.dao.JobInfoDao">
+
+  <sql id="allColumns">
+    `id`, `executor_id`, `name`, `group_name`, `author`, `alarm_email`, `glue_type`, `schedule_type`, `schedule_conf`,
+    `misfire_strategy`, `route_strategy`, `block_strategy`, `executor_handler`, `executor_param`, `timeout`, `fail_retry`,
+    `status`, `trigger_last_time`, `trigger_next_time`, `remark`, `create_time`, `update_time`
+  </sql>
+
+  <select id="countByExecutorIdAndStatus" resultType="java.lang.Integer">
+    select count(*) from job_info
+    <where>
+      <if test="executorId != null">
+        and executor_id = #{executorId}
+      </if>
+      <if test="status != null">
+        and status = #{status}
+      </if>
+    </where>
+  </select>
+
+  <select id="findByExecutorIdAndStatus" resultType="cn.aulang.job.admin.model.po.JobInfo">
+    select <include refid="allColumns"/> from job_info
+    <where>
+      <if test="executorId != null">
+        and executor_id = #{executorId}
+      </if>
+      <if test="status != null">
+        and status = #{status}
+      </if>
+    </where>
+    order by id desc
+  </select>
+
+  <select id="findBy" resultType="cn.aulang.job.admin.model.vo.JobVO">
+    select a.`id`, a.`executor_id`, a.`name`, a.`group_name`, a.`author`, a.`alarm_email`, a.`glue_type`, a.`schedule_type`, a.`schedule_conf`,
+    a.`misfire_strategy`, a.`route_strategy`, a.`block_strategy`, a.`executor_handler`, a.`executor_param`, a.`timeout`, a.`fail_retry`,
+    a.`status`, a.`trigger_last_time`, a.`trigger_next_time`, a.`remark`, a.`create_time`, a.`update_time`, b.title executor_title
+    from job_info a left join job_executor b on a.executor_id = b.id
+    <where>
+      <if test="executorId != null">
+        and a.executor_id = #{executorId}
+      </if>
+      <if test="status != null">
+        and a.status = #{status}
+      </if>
+      <if test="name != null and name != ''">
+        <bind name="name" value="'%' + name + '%'"/>
+        and a.`name` like #{name}
+      </if>
+      <if test="groupName != null and groupName != ''">
+        and a.`group_name` = #{groupName}
+      </if>
+      <if test="executorHandler != null and executorHandler != ''">
+        <bind name="executorHandler" value="'%' + executorHandler + '%'"/>
+        and a.executor_handler like #{executorHandler}
+      </if>
+      <if test="author != null and author != ''">
+        <bind name="author" value="'%' + author + '%'"/>
+        and a.author like #{author}
+      </if>
+    </where>
+    order by a.id desc
+  </select>
+
+  <select id="findByStatusAndTriggerNextTimeLt" resultType="cn.aulang.job.admin.model.po.JobInfo">
+    select <include refid="allColumns"/> from job_info where status = #{status} and trigger_next_time &lt;= #{triggerNextTime}
+  </select>
+
+  <update id="updateTriggerNextTime">
+    update job_info set trigger_last_time = #{triggerCurrentTime}, trigger_next_time = #{triggerNextTime} where id = ${jobId} and trigger_next_time = #{triggerCurrentTime}
+  </update>
+
+  <select id="findChildJobs" resultType="cn.aulang.job.admin.model.po.JobInfo">
+    select a.`id`, a.`executor_id`, a.`name`, a.`group_name`, a.`author`, a.`alarm_email`, a.`glue_type`, a.`schedule_type`, a.`schedule_conf`,
+    a.`misfire_strategy`, a.`route_strategy`, a.`block_strategy`, a.`executor_handler`, a.`executor_param`, a.`timeout`, a.`fail_retry`,
+    a.`status`, a.`trigger_last_time`, a.`trigger_next_time`, a.`remark`,  a.`create_time`, a.`update_time`
+    from job_info a inner join job_child b on a.id = b.child_id and b.job_id = #{id}
+  </select>
+
+  <select id="findGroupNames" resultType="java.lang.String">
+    select group_name from job_info group by group_name order by group_name asc
+  </select>
+
+  <select id="jobStatusCount" resultType="cn.aulang.job.admin.model.vo.JobStatusCountVO">
+    select (select count(*) from job_info where status = 1) running,(select count(*) from job_info where status = 0) `stop` from dual
+  </select>
+
+  <delete id="deleteChildJob">
+    delete from job_child where job_id = #{jobId}
+  </delete>
+
+  <insert id="saveChildJob">
+    insert into job_child(job_id, child_id) values
+    <foreach collection="list" item="e" separator=",">
+      (#{e.jobId}, #{e.childId})
+    </foreach>
+  </insert>
+</mapper>

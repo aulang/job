@@ -1,9 +1,9 @@
 package cn.aulang.job.admin.dao;
 
+import cn.aulang.common.crud.rdbm.MybatisRepository;
 import cn.aulang.job.admin.model.po.JobLog;
 import cn.aulang.job.admin.model.vo.JobDailyReportVO;
 import cn.aulang.job.admin.model.vo.JobLogVO;
-import cn.aulang.common.crud.rdbm.MybatisRepository;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.page.Pageable;

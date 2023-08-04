@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.aulang.job.admin.dao.JobLogDao">
+
+  <sql id="allColumns">
+    id, job_id, executor_id, executor_address, executor_handler, executor_param, sharding_param, fail_retry, trigger_type,
+    trigger_time, trigger_code, trigger_msg, handle_time, handle_code, handle_msg, alarm_status
+  </sql>
+
+  <insert id="saveHandleInfo">
+    insert into job_log(id, job_id, executor_id, trigger_time, trigger_code, handle_time, handle_code, handle_msg) values
+    (#{entity.id}, #{entity.jobId}, #{entity.executorId}, #{entity.triggerTime}, #{entity.triggerCode}, #{entity.handleTime}, #{entity.handleCode}, #{entity.handleMsg})
+    on duplicate key update handle_time = values (handle_time), handle_code = values (handle_code), handle_msg = values (handle_msg)
+  </insert>
+
+  <insert id="saveTriggerInfo">
+    insert into job_log(id, job_id, executor_id, executor_address, executor_handler, executor_param, sharding_param, fail_retry, trigger_type, trigger_time, trigger_code, trigger_msg,
+    handle_time, handle_code) values (#{entity.id}, #{entity.jobId}, #{entity.executorId}, #{entity.executorAddress}, #{entity.executorHandler}, #{entity.executorParam},
+    #{entity.shardingParam}, #{entity.failRetry}, #{entity.triggerType}, #{entity.triggerTime}, #{entity.triggerCode}, #{entity.triggerMsg}, #{entity.handleTime}, #{entity.handleCode})
+    on duplicate key update executor_address = values(executor_address), executor_handler = values(executor_handler), executor_param = values(executor_param),
+    sharding_param = values(sharding_param), trigger_type = values(trigger_type), trigger_time = values(trigger_time), trigger_msg = values(trigger_msg)
+  </insert>
+
+  <delete id="deleteByJobId">
+    delete from job_log where job_id = #{jobId}
+  </delete>
+
+  <select id="findBy" resultType="cn.aulang.job.admin.model.vo.JobLogVO">
+    select a.id, a.job_id, a.executor_id, a.executor_address, a.executor_handler, a.executor_param, a.sharding_param, a.fail_retry, a.trigger_type,
+    a.trigger_time, a.trigger_code, a.trigger_msg, a.handle_time, a.handle_code, a.handle_msg, a.alarm_status, b.name job_name, b.`misfire_strategy`,
+    b.`route_strategy`, b.`block_strategy`, b.timeout, c.title executor_title from job_log a
+    left join job_info b on a.job_id = b.id
+    left join job_executor c on a.executor_id = c.id
+    <where>
+      <if test="jobId != null">
+        and a.job_id = #{jobId}
+      </if>
+      <if test="from != null">
+        and a.trigger_time &gt;= #{from}
+      </if>
+      <if test="to != null">
+        and a.trigger_time &lt;= #{to}
+      </if>
+      <if test="executorId != null">
+        and a.executor_id = #{executorId}
+      </if>
+      <if test="name != null and name != ''">
+        <bind name="name" value="'%' + name + '%'"/>
+        and b.name like #{name}
+      </if>
+      <if test="status == 1">
+        and a.handle_code = 200
+      </if>
+      <if test="status == 2">
+        and (a.trigger_code not in (0, 200) or a.handle_code not in (0, 200))
+      </if>
+      <if test="status == 3">
+        and a.trigger_code = 200 and a.handle_code = 0
+      </if>
+    </where>
+    order by a.trigger_time
+    <choose>
+      <when test="sort == 'asc'">asc</when>
+      <otherwise>desc</otherwise>
+    </choose>
+  </select>
+
+  <select id="findRunningJob" resultType="cn.aulang.job.admin.model.po.JobLog">
+    select <include refid="allColumns"/> from job_log
+    where handle_code = #{handleCode}
+    <if test="jobId != null">
+      and job_id = #{jobId}
+    </if>
+    order by trigger_time desc
+  </select>
+
+  <select id="findRunningJobByExecutorAddress" resultType="cn.aulang.job.admin.model.po.JobLog">
+    select <include refid="allColumns"/> from job_log
+    where executor_address = #{executorAddress} and handle_code = #{handleCode} order by trigger_time desc
+  </select>
+
+  <delete id="deleteByTriggerTimeLt">
+    delete from job_log
+    <where>
+      <if test="jobId != null">
+        and job_id = #{jobId}
+      </if>
+      <if test="triggerTime != null">
+        and trigger_time &lt;= #{triggerTime}
+      </if>
+      <if test="executorId != null">
+        and executor_id = #{executorId}
+      </if>
+    </where>
+  </delete>
+
+  <select id="findClearMaxId" resultType="java.lang.Long">
+    <bind name="offset" value="number - 1"></bind>
+    select id from job_log
+    <where>
+      <if test="executorId != null">
+        and executor_id = #{executorId}
+      </if>
+      <if test="jobId != null">
+        and job_id = #{jobId}
+      </if>
+    </where>
+    order by id asc
+    limit #{offset}, #{number}
+  </select>
+
+  <select id="getDailyReport" resultType="cn.aulang.job.admin.model.vo.JobDailyReportVO">
+    select count(*) total,
+    sum(handle_code = 0) running_count,
+    sum(handle_code = 200) success_count
+    from job_log where trigger_time between #{from} and #{to}
+  </select>
+
+  <delete id="deleteByIdLt">
+    delete from job_log
+    <where>
+      <if test="executorId != null">
+        and executor_id = #{executorId}
+      </if>
+      <if test="jobId != null">
+        and job_id = #{jobId}
+      </if>
+      <if test="id != null">
+        and id &lt;= #{id}
+      </if>
+    </where>
+  </delete>
+
+  <update id="updateRunningHandleCode">
+    update job_log set handle_code = #{afterCode} where id = #{id} and handle_code = #{beforeCode}
+  </update>
+</mapper>

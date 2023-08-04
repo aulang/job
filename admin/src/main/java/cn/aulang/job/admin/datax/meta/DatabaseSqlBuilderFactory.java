@@ -11,18 +11,12 @@ import cn.aulang.job.admin.exception.JobException;
 public class DatabaseSqlBuilderFactory {
 
     public static DatabaseSqlBuilder getByDbType(DatabaseTypeEnum databaseType) {
-        switch (databaseType) {
-            case MYSQL:
-            case MARIADB:
-                return BaseDatabaseSqlBuilder.getInstance();
-            case ORACLE:
-                return OracleSqlBuilder.getInstance();
-            case POSTGRESQL:
-                return PostgreSQLSqlBuilder.getInstance();
-            case SQLSERVER:
-                return SqlServerSqlBuilder.getInstance();
-            default:
-                throw new JobException("Unsupported database: " + databaseType.getName());
-        }
+        return switch (databaseType) {
+            case MYSQL, MARIADB -> BaseDatabaseSqlBuilder.getInstance();
+            case ORACLE -> OracleSqlBuilder.getInstance();
+            case POSTGRESQL -> PostgreSQLSqlBuilder.getInstance();
+            case SQLSERVER -> SqlServerSqlBuilder.getInstance();
+            default -> throw new JobException("Unsupported database: " + databaseType.getName());
+        };
     }
 }

@@ -1,5 +1,9 @@
 package cn.aulang.job.admin.datax.parser;
 
+import cn.aulang.job.admin.datax.db.Column;
+import cn.aulang.job.admin.datax.db.Table;
+import cn.aulang.job.admin.exception.JobException;
+import cn.aulang.job.admin.model.po.JobDataSource;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
@@ -10,10 +14,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
-import cn.aulang.job.admin.datax.db.Column;
-import cn.aulang.job.admin.datax.db.Table;
-import cn.aulang.job.admin.exception.JobException;
-import cn.aulang.job.admin.model.po.JobDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -86,7 +86,7 @@ public class MongoDBStructureParser implements DatabaseStructureParser {
         MongoCollection<Document> collection = mongoClient.getDatabase(dbName).getCollection(tableName);
         Document document = collection.find().first();
         List<Column> list = new ArrayList<>();
-        if (document == null || document.size() <= 0) {
+        if (document == null || document.size() == 0) {
             return list;
         }
 
@@ -119,7 +119,7 @@ public class MongoDBStructureParser implements DatabaseStructureParser {
         MongoCollection<Document> collection = mongoClient.getDatabase(dbName).getCollection(tableName);
         Document document = collection.find().first();
         List<String> list = new ArrayList<>();
-        if (document == null || document.size() <= 0) {
+        if (document == null || document.size() == 0) {
             return list;
         }
 

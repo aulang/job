@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author wulang
  */
 @Data
-@ConfigurationProperties(prefix = "swater.datax")
+@ConfigurationProperties(prefix = "datax")
 public class DataXProperties {
 
     /**

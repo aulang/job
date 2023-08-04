@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @author wulang
  */
 @Data
-@ConfigurationProperties(prefix = "swater.job")
+@ConfigurationProperties(prefix = "al-job")
 public class JobProperties {
 
     /**

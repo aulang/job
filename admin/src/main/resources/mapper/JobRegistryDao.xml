@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.aulang.job.admin.dao.JobRegistryDao">
+
+  <sql id="allColumns">
+    id, `type`, app_name, address, address_type, health, update_time
+  </sql>
+
+  <select id="findByTypeAndAppName" resultType="cn.aulang.job.admin.model.po.JobRegistry">
+    select <include refid="allColumns"/> from job_registry
+    <where>
+      <if test="type != null and type != ''">
+        and `type` = #{type}
+      </if>
+      <if test="appName != null and appName != ''">
+        and app_name = #{appName}
+      </if>
+    </where>
+    order by update_time desc
+  </select>
+
+  <select id="findHealthExecutorAddress" resultType="java.lang.String">
+    select address from job_registry where `type` = #{type} and app_name = #{appName} and address_type = #{auto} and health = #{online} and update_time &gt; #{updateTime}
+    union all
+    select address from job_registry where `type` = #{type} and app_name = #{appName} and address_type = #{manual} and health != #{offline}
+  </select>
+
+  <select id="findHealthAdminAddress" resultType="java.lang.String">
+    select address from job_registry where `type` = #{type} and address_type = #{auto} and update_time &gt; #{updateTime}
+  </select>
+
+  <select id="findAutoAdminAddress" resultType="java.lang.String">
+    select address from job_registry where `type` = #{type} and address_type = #{auto}
+  </select>
+
+  <select id="getTypeAndAppNameAndAddress" resultType="cn.aulang.job.admin.model.po.JobRegistry">
+    select <include refid="allColumns"/> from job_registry where `type` = #{type} and app_name = #{appName} and address = #{address}
+  </select>
+
+  <select id="findNeedHeathCheckNodes" resultType="cn.aulang.job.admin.model.po.JobRegistry">
+    select <include refid="allColumns"/> from job_registry where `type` = #{type} and address_type = #{auto} and update_time &lt; #{updateTime}
+    union all
+    select <include refid="allColumns"/> from job_registry where `type` = #{type} and address_type = #{manual}
+  </select>
+
+  <update id="refreshUpdateTime">
+    update job_registry set update_time = #{updateTime}, address_type = #{addressType}, health = #{health}  where id = #{id}
+  </update>
+
+  <delete id="deleteByTypeAndAppName">
+    delete from job_registry where `type` = #{type} and app_name = #{appName}
+  </delete>
+
+  <delete id="deleteByTypeAndAppNameAndAddress">
+    delete from job_registry where `type` = #{type} and app_name = #{appName} and address = #{address}
+  </delete>
+</mapper>

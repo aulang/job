@@ -1,7 +1,7 @@
 package cn.aulang.job.admin.dao;
 
-import cn.aulang.job.admin.model.po.JobUser;
 import cn.aulang.common.crud.rdbm.MybatisRepository;
+import cn.aulang.job.admin.model.po.JobUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import tk.mybatis.mapper.page.Pageable;

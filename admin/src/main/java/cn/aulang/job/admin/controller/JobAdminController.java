@@ -8,9 +8,8 @@ import cn.aulang.job.core.model.CallbackParam;
 import cn.aulang.job.core.model.HandlerRegisterParam;
 import cn.aulang.job.core.model.RegisterParam;
 import cn.aulang.job.core.model.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,11 +24,10 @@ import java.util.List;
  *
  * @author wulang
  */
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 public class JobAdminController implements AdminApi {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobAdminController.class);
 
     private final JobProperties properties;
     private final JobAdminService adminService;
@@ -50,7 +48,7 @@ public class JobAdminController implements AdminApi {
     public Response<String> register(
             @RequestBody RegisterParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
-        logger.info("Executor register/beat request: {}", param.toString());
+        log.info("Executor register/beat request: {}", param.toString());
 
         if (incorrectAccessToken(accessToken)) {
             return Response.fail("Incorrect access token!");
@@ -64,7 +62,7 @@ public class JobAdminController implements AdminApi {
     public Response<String> callback(
             @RequestBody CallbackParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
-        logger.info("Executor callback request: {}", param.toString());
+        log.info("Executor callback request: {}", param.toString());
 
         if (incorrectAccessToken(accessToken)) {
             return Response.fail("Incorrect access token!");
@@ -78,7 +76,7 @@ public class JobAdminController implements AdminApi {
     public Response<String> unregister(
             @RequestBody RegisterParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
-        logger.info("Executor unregister request: {}", param.toString());
+        log.info("Executor unregister request: {}", param.toString());
 
         if (incorrectAccessToken(accessToken)) {
             return Response.fail("Incorrect access token!");
@@ -92,7 +90,7 @@ public class JobAdminController implements AdminApi {
     public Response<String> registerHandler(
             @RequestBody HandlerRegisterParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
-        logger.info("Executor register handler request: {}", param);
+        log.info("Executor register handler request: {}", param);
 
         if (incorrectAccessToken(accessToken)) {
             return Response.fail("Incorrect access token!");

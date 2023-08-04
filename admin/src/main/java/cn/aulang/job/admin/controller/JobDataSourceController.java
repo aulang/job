@@ -1,5 +1,6 @@
 package cn.aulang.job.admin.controller;
 
+import cn.aulang.common.web.CRUDControllerSupport;
 import cn.aulang.job.admin.datax.db.Column;
 import cn.aulang.job.admin.datax.db.Table;
 import cn.aulang.job.admin.exception.JobException;
@@ -8,11 +9,9 @@ import cn.aulang.job.admin.model.dto.QueryDataDTO;
 import cn.aulang.job.admin.model.po.JobDataSource;
 import cn.aulang.job.admin.service.JobDataSourceService;
 import cn.aulang.job.core.model.Response;
-import cn.aulang.common.web.CRUDControllerSupport;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,11 +33,10 @@ import java.util.Map;
  *
  * @author wulang
  */
+@Slf4j
 @RestController
 @RequestMapping("/datasource")
 public class JobDataSourceController extends CRUDControllerSupport<JobDataSource, Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobDataSourceController.class);
 
     private final JobDataSourceService dataSourceService;
 
@@ -96,7 +94,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             List<String> tableNames = dataSourceService.getTableNames(dataSource);
             return Response.success(tableNames);
         } catch (Exception e) {
-            logger.error("Fail to get tables", e);
+            log.error("Fail to get tables", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -116,7 +114,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             List<String> columns = dataSourceService.getColumnNames(dataSource, body.getTable(), body.getSql());
             return Response.success(columns);
         } catch (Exception e) {
-            logger.error("Fail to get table columns", e);
+            log.error("Fail to get table columns", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -132,7 +130,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             List<Table> tables = dataSourceService.getTables(dataSource);
             return Response.success(tables);
         } catch (Exception e) {
-            logger.error("Fail to get tables", e);
+            log.error("Fail to get tables", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -148,7 +146,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             List<Column> columns = dataSourceService.getColumns(dataSource, tableName);
             return Response.success(columns);
         } catch (Exception e) {
-            logger.error("Fail to get table columns", e);
+            log.error("Fail to get table columns", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -174,7 +172,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
 
             return dataSourceService.getData(dataSource, tableName, where, sort, page, size, columnArray);
         } catch (Exception e) {
-            logger.error("Fail to get table data", e);
+            log.error("Fail to get table data", e);
             throw new JobException(e.getMessage());
         }
     }
@@ -200,15 +198,15 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
                     query.getSize(),
                     columns);
         } catch (Exception e) {
-            logger.error("Fail to get table data", e);
+            log.error("Fail to get table data", e);
             throw new JobException(e.getMessage());
         }
     }
 
     @PostMapping("/{id}/insert")
     public Response<Long> insert(@PathVariable("id") Long id,
-                                @RequestParam("tableName") String tableName,
-                                @RequestBody Map<String, Object> body) {
+                                 @RequestParam("tableName") String tableName,
+                                 @RequestBody Map<String, Object> body) {
         JobDataSource dataSource = dataSourceService.get(id);
         if (dataSource == null) {
             return Response.fail("DataSource id: " + id + " not exists");
@@ -218,15 +216,15 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             long result = dataSourceService.insertData(dataSource, tableName, body);
             return Response.success(result);
         } catch (Exception e) {
-            logger.error("Fail to update table data", e);
+            log.error("Fail to update table data", e);
             throw new JobException(e.getMessage());
         }
     }
 
     @PostMapping("/{id}/update")
     public Response<Long> update(@PathVariable("id") Long id,
-                                @RequestParam("tableName") String tableName,
-                                @RequestBody Map<String, Object> body) {
+                                 @RequestParam("tableName") String tableName,
+                                 @RequestBody Map<String, Object> body) {
         JobDataSource dataSource = dataSourceService.get(id);
         if (dataSource == null) {
             return Response.fail("DataSource id: " + id + " not exists");
@@ -236,15 +234,15 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             long result = dataSourceService.updateData(dataSource, tableName, body);
             return Response.success(result);
         } catch (Exception e) {
-            logger.error("Fail to update table data", e);
+            log.error("Fail to update table data", e);
             throw new JobException(e.getMessage());
         }
     }
 
     @PostMapping("/{id}/delete")
     public Response<Long> delete(@PathVariable("id") Long id,
-                                @RequestParam("tableName") String tableName,
-                                @RequestBody Map<String, Object> body) {
+                                 @RequestParam("tableName") String tableName,
+                                 @RequestBody Map<String, Object> body) {
         JobDataSource dataSource = dataSourceService.get(id);
         if (dataSource == null) {
             return Response.fail("DataSource id: " + id + " not exists");
@@ -254,15 +252,15 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             long result = dataSourceService.deleteData(dataSource, tableName, body);
             return Response.success(result);
         } catch (Exception e) {
-            logger.error("Fail to delete table data", e);
+            log.error("Fail to delete table data", e);
             throw new JobException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}/delete")
     public Response<Long> delete(@PathVariable("id") Long id,
-                                @RequestParam("tableName") String tableName,
-                                @RequestParam("id") String rowId) {
+                                 @RequestParam("tableName") String tableName,
+                                 @RequestParam("id") String rowId) {
         JobDataSource dataSource = dataSourceService.get(id);
         if (dataSource == null) {
             return Response.fail("DataSource id: " + id + " not exists");
@@ -272,7 +270,7 @@ public class JobDataSourceController extends CRUDControllerSupport<JobDataSource
             long result = dataSourceService.deleteDataById(dataSource, tableName, rowId);
             return Response.success(result);
         } catch (Exception e) {
-            logger.error("Fail to delete table data", e);
+            log.error("Fail to delete table data", e);
             throw new JobException(e.getMessage());
         }
     }

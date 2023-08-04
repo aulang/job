@@ -1,5 +1,8 @@
 package cn.aulang.job.admin.controller;
 
+import cn.aulang.common.core.utils.SimpleDateUtils;
+import cn.aulang.common.exception.NotFoundException;
+import cn.aulang.common.web.CRUDControllerSupport;
 import cn.aulang.job.admin.exception.JobException;
 import cn.aulang.job.admin.model.dto.DataXParamDTO;
 import cn.aulang.job.admin.model.dto.JobBuildDTO;
@@ -15,12 +18,8 @@ import cn.aulang.job.admin.service.JobInfoService;
 import cn.aulang.job.admin.service.TriggerService;
 import cn.aulang.job.core.enums.GlueTypeEnum;
 import cn.aulang.job.core.model.Response;
-import cn.aulang.common.exception.NotFoundException;
-import cn.aulang.common.web.CRUDControllerSupport;
-import cn.aulang.common.core.utils.SimpleDateUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,17 +40,15 @@ import java.util.List;
  *
  * @author wulang
  */
+@Slf4j
 @RestController
 @RequestMapping("/job")
 public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobInfoController.class);
 
     private final JobInfoService jobService;
     private final TriggerService triggerService;
     private final JobGlueCodeService glueCodeService;
     private final JobDataXParamService dataXParamService;
-
 
     @Autowired
     public JobInfoController(JobInfoService jobService, TriggerService triggerService,
@@ -107,7 +104,7 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
         JobInfo jobInfo = jobService.get(id);
 
         if (jobInfo == null) {
-            logger.warn("Job Id: {} not exists", dto.getId());
+            log.warn("Job Id: {} not exists", dto.getId());
             return Response.fail("Job Id: {} not exists");
         }
 
@@ -123,7 +120,7 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
 
     @GetMapping("/trigger-time")
     public Response<List<String>> nextTriggerTime(@RequestParam String scheduleType,
-                                                 @RequestParam String scheduleConf) {
+                                                  @RequestParam String scheduleConf) {
         if (StringUtils.isAnyBlank(scheduleType, scheduleConf)) {
             return Response.success(Collections.emptyList());
         }
@@ -146,7 +143,7 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
             }
         } catch (Exception e) {
             String msg = "Failed to get the scheduling time";
-            logger.error(msg, e);
+            log.error(msg, e);
             return Response.fail(msg);
         }
 
@@ -155,7 +152,7 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
 
     @PostMapping("/build")
     public Response<JobInfo> build(@RequestBody JobBuildDTO buildData) {
-        logger.info("Build job data: {}", buildData);
+        log.info("Build job data: {}", buildData);
 
         GlueTypeEnum glueType = GlueTypeEnum.match(buildData.getGlueType());
 

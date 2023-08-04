@@ -16,17 +16,9 @@ public class DatabaseStructureParserFactory {
             throw new JobException("Unsupported database: " + dataSource.getType());
         }
 
-        switch (databaseType) {
-            case MYSQL:
-            case SQLSERVER:
-            case POSTGRESQL:
-            case MARIADB:
-            case ORACLE:
-                return new BaseStructureParser(dataSource);
-            case MONGODB:
-                return new MongoDBStructureParser(dataSource);
-            default:
-                throw new JobException("Unsupported database: " + dataSource.getType());
-        }
+        return switch (databaseType) {
+            case MYSQL, SQLSERVER, POSTGRESQL, MARIADB, ORACLE -> new BaseStructureParser(dataSource);
+            case MONGODB -> new MongoDBStructureParser(dataSource);
+        };
     }
 }

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.aulang.job.admin.dao.JobDataXParamDao">
+
+  <sql id="allColumns">
+    id, job_id, src_ds_id, src_table, src_column, whera, split_pk, query_sql, dest_ds_id, dest_table, dest_column, write_mode, is_upsert, upsert_key,
+    jvm_param, increment_type, increment_key, incr_start_value, time_pattern, replace_param, partition_info, channel, speed, batch_size, record, percentage,
+    flow, biz_type, update_time
+  </sql>
+
+  <select id="getByJobId" resultType="cn.aulang.job.admin.model.po.JobDataXParam">
+    select <include refid="allColumns"/> from job_datax_param where job_id = #{jobId}
+  </select>
+
+  <select id="countByDsId" resultType="java.lang.Integer">
+    select count(*) from job_datax_param where src_ds_id = #{dsId} or dest_ds_id = #{dsId}
+  </select>
+
+  <delete id="deleteByJobId">
+    delete from job_datax_param where job_id = #{jobId}
+  </delete>
+
+  <update id="updateIncrStartValue">
+    update job_datax_param set incr_start_value = #{afterValue} where id = #{id} and incr_start_value = #{beforeValue}
+  </update>
+</mapper>

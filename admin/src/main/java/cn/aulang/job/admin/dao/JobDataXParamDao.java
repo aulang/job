@@ -1,7 +1,7 @@
 package cn.aulang.job.admin.dao;
 
-import cn.aulang.job.admin.model.po.JobDataXParam;
 import cn.aulang.common.crud.rdbm.MybatisRepository;
+import cn.aulang.job.admin.model.po.JobDataXParam;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

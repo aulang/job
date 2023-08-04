@@ -11,13 +11,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author wulang
  */
-public class DelayTriggerJob implements Delayed {
-
-    private final JobInfo jobInfo;
-
-    public DelayTriggerJob(JobInfo jobInfo) {
-        this.jobInfo = jobInfo;
-    }
+public record DelayTriggerJob(JobInfo jobInfo) implements Delayed {
 
     @Override
     public long getDelay(@NonNull TimeUnit unit) {
@@ -40,9 +34,5 @@ public class DelayTriggerJob implements Delayed {
         }
         long diff = getDelay(TimeUnit.MILLISECONDS) - other.getDelay(TimeUnit.MILLISECONDS);
         return (diff == 0 ? 0 : ((diff < 0) ? -1 : 1));
-    }
-
-    public JobInfo getJobInfo() {
-        return jobInfo;
     }
 }

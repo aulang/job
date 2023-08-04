@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.aulang.job.admin.dao.JobHandlerParamDao">
+
+  <sql id="allColumns">
+    `id`, `app_name`, `handler_name`, `name`, `title`, `type`, `required`, `default_value`, `pattern`, `is_array`, `remark`, `update_time`
+  </sql>
+
+  <delete id="deleteByAppName">
+    delete from job_handler_param where app_name = #{appName}
+  </delete>
+
+  <delete id="deleteByAppNameAndUpdateTimeLt">
+    delete from job_handler_param where app_name = #{appName} and update_time &lt; #{updateTime}
+  </delete>
+
+  <select id="findByHandlerId" resultType="cn.aulang.job.admin.model.po.JobHandlerParam">
+    select a.id, a.app_name, a.handler_name, a.name, a.title, a.type, a.required, a.default_value, a.pattern, a.is_array, a.remark, a.update_time from
+    job_handler_param a inner join job_handler_registry b on a.app_name = b.app_name and a.handler_name = b.name where b.id = #{handlerId} order by a.id asc
+  </select>
+
+  <insert id="insertDuplicate">
+    insert into job_handler_param (`id`, `app_name`, `handler_name`, `name`, `title`, `type`, `required`, `default_value`, `pattern`, `is_array`, `remark`, `update_time`) values
+    (#{entity.id}, #{entity.appName}, #{entity.handlerName}, #{entity.name}, #{entity.title}, #{entity.type}, #{entity.required}, #{entity.defaultValue},
+    #{entity.pattern}, #{entity.isArray}, #{entity.remark}, #{entity.updateTime})
+    on duplicate key update title = values(title), `type` = values(`type`), required = values(required), default_value = values(default_value),
+    pattern = values(pattern), is_array = values(is_array), remark = values(remark), update_time = values(update_time)
+  </insert>
+</mapper>

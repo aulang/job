@@ -8,9 +8,9 @@ import cn.aulang.job.core.model.LogParam;
 import cn.aulang.job.core.model.LogResult;
 import cn.aulang.job.core.model.Response;
 import cn.aulang.job.core.model.TriggerParam;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,25 +24,17 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author wulang
  */
+@Data
+@Slf4j
 public class ExecutorClient implements ExecutorApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExecutorClient.class);
-    private static final RestTemplate restTemplate = new RestTemplate();
-
     private String address;
+    private RestTemplate restTemplate = new RestTemplate();
 
     public ExecutorClient() {
     }
 
     public ExecutorClient(String address) {
-        this.address = address;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -74,10 +66,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor beat api fail", e);
+            log.error("Call executor beat api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor beat api fail", e);
+            log.error("Call executor beat api fail", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -93,10 +85,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor beat api fail", e);
+            log.error("Call executor beat api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor beat api fail", e);
+            log.error("Call executor beat api fail", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -112,10 +104,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor idle-beat api fail", e);
+            log.error("Call executor idle-beat api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor idle-beat api fail", e);
+            log.error("Call executor idle-beat api fail", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -131,10 +123,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor run api fail", e);
+            log.error("Call executor run api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor run api fail", e);
+            log.error("Call executor run api fail", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -150,10 +142,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor kill api fail", e);
+            log.error("Call executor kill api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor kill api fail", e);
+            log.error("Call executor kill api fail", e);
             return Response.fail(e.getMessage());
         }
     }
@@ -169,10 +161,10 @@ public class ExecutorClient implements ExecutorApi {
             return restTemplate.exchange(url, HttpMethod.POST, entity, reference).getBody();
         } catch (ResourceAccessException e) {
             // 网络不通，节点离线
-            logger.error("Call executor log api fail", e);
+            log.error("Call executor log api fail", e);
             return Response.netError(e.getMessage());
         } catch (Exception e) {
-            logger.error("Call executor log api fail", e);
+            log.error("Call executor log api fail", e);
             return Response.fail(e.getMessage());
         }
     }

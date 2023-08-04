@@ -1,6 +1,7 @@
 package cn.aulang.job.admin.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -10,6 +11,7 @@ import java.util.Date;
  *
  * @author wulang
  */
+@Data
 public class JobDailyReportVO {
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
@@ -19,38 +21,6 @@ public class JobDailyReportVO {
     private Long runningCount = 0L;
     private Long successCount = 0L;
     private Long failCount = null;
-
-    public Date getTriggerDay() {
-        return triggerDay;
-    }
-
-    public void setTriggerDay(Date triggerDay) {
-        this.triggerDay = triggerDay;
-    }
-
-    public Long getTotal() {
-        return total;
-    }
-
-    public void setTotal(Long total) {
-        this.total = total;
-    }
-
-    public Long getRunningCount() {
-        return runningCount;
-    }
-
-    public void setRunningCount(Long runningCount) {
-        this.runningCount = runningCount;
-    }
-
-    public Long getSuccessCount() {
-        return successCount;
-    }
-
-    public void setSuccessCount(Long successCount) {
-        this.successCount = successCount;
-    }
 
     public Long getFailCount() {
         if (failCount != null) {
@@ -63,9 +33,5 @@ public class JobDailyReportVO {
         }
 
         return (failCount = 0L);
-    }
-
-    public void setFailCount(Long failCount) {
-        this.failCount = failCount;
     }
 }

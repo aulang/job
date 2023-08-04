@@ -44,6 +44,8 @@ allprojects {
 
             dependency 'com.github.ben-manes.caffeine:caffeine:3.1.7'
 
+            dependency 'com.mysql:mysql-connector-j:8.1.0'
+
             dependency 'org.projectlombok:lombok:1.18.28'
 
             dependency 'net.java.dev.jna:jna:5.13.0'
