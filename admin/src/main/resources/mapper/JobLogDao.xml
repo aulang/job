@@ -95,7 +95,7 @@
   </delete>
 
   <select id="findClearMaxId" resultType="java.lang.Long">
-    <bind name="offset" value="number - 1"></bind>
+    <bind name="offset" value="number - 1"/>
     select id from job_log
     <where>
       <if test="executorId != null">
