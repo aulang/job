@@ -91,6 +91,8 @@ public class JobTriggerScheduler implements DisposableBean {
                 int ret = jobService.updateTriggerNextTime(jobInfo.getId(), jobInfo.getTriggerNextTime(), jobTriggerNextTime);
 
                 if (ret > 0) {
+                    // 缓存上次触发时间
+                    jobInfo.setLastTime(jobInfo.getTriggerLastTime());
                     // 当前次触发时间
                     jobInfo.setTriggerLastTime(jobInfo.getTriggerNextTime());
                     // 下次触发时间

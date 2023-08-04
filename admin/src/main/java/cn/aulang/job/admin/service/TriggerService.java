@@ -317,6 +317,7 @@ public class TriggerService {
         JobLog jobLog = logService.newJobLog(jobInfo, triggerType, shardingParam, failRetry);
 
         param.setLogId(jobLog.getId());
+        param.setLastDateTime(jobInfo.getLastTime());
         param.setLogDateTime(jobLog.getTriggerTime().getTime());
 
         Response<String> routeResult;

@@ -143,4 +143,9 @@ public class JobInfo extends LongIdEntity {
      */
     @Transient
     private List<Long> childJobIds;
+    /**
+     * 上次调度时间
+     */
+    @Transient
+    private Long lastTime = 0L;
 }
