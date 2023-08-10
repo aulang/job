@@ -78,14 +78,14 @@ public class RegisterExecutor implements ApplicationContextAware, InitializingBe
     private void beat() {
         Response<String> result = adminApi.register(param, properties.getAccessToken());
         if (!result.isSuccess()) {
-            log.error("Executor register fail: {}", result.getMsg());
+            log.error("Executor register fail: {}", result.getMessage());
         }
     }
 
     public void unregister() {
         Response<String> result = adminApi.unregister(param, properties.getAccessToken());
         if (!result.isSuccess()) {
-            log.error("Executor unregister fail: {}", result.getMsg());
+            log.error("Executor unregister fail: {}", result.getMessage());
         }
     }
 

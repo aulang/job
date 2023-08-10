@@ -1,7 +1,7 @@
 package cn.aulang.job.admin.model.po;
 
-import cn.aulang.job.admin.enums.JobStatusEnum;
 import cn.aulang.common.crud.id.LongIdEntity;
+import cn.aulang.job.admin.enums.JobStatusEnum;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -147,5 +147,5 @@ public class JobInfo extends LongIdEntity {
      * 上次调度时间
      */
     @Transient
-    private Long lastTime = 0L;
+    private Long lastTriggerTime = 0L;
 }

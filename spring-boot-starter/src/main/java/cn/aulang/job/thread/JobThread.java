@@ -35,14 +35,16 @@ public class JobThread implements Runnable {
 
     @Override
     public void run() {
-        String jobLogFileName = JobFileAppender.makeLogFileName(
-                new Date(triggerParam.getLogDateTime()),
-                triggerParam.getLogId()
-        );
+        Date logDateTime = new Date(triggerParam.getLogDateTime());
+        Date lastDateTime = new Date(triggerParam.getLastDateTime());
+
+        String jobLogFileName = JobFileAppender.makeLogFileName(logDateTime, triggerParam.getLogId());
 
         JobContext context = new JobContext(
                 triggerParam.getJobId(),
                 triggerParam.getLogId(),
+                logDateTime,
+                lastDateTime,
                 triggerParam.getHandlerParam(),
                 jobLogFileName,
                 triggerParam.getShardIndex(),

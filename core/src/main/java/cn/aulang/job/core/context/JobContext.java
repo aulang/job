@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 /**
  * Job执行上下文
  *
@@ -17,6 +19,10 @@ public class JobContext {
 
     private long jobId;
     private long logId;
+
+    private Date lastDateTime;
+    private Date currentDateTime;
+
     private String jobParam;
     private String jobLogFileName;
 
@@ -26,11 +32,18 @@ public class JobContext {
     private int handleCode;
     private String handleMsg;
 
-    public JobContext(long jobId, long logId, String jobParam, String jobLogFileName, int shardIndex, int shardTotal) {
+    public JobContext(long jobId, long logId, Date currentDateTime, Date lastDateTime,
+                      String jobParam, String jobLogFileName, int shardIndex, int shardTotal) {
         this.jobId = jobId;
         this.logId = logId;
+
+
+        this.lastDateTime = lastDateTime;
+        this.currentDateTime = currentDateTime;
+
         this.jobParam = jobParam;
         this.jobLogFileName = jobLogFileName;
+
         this.shardIndex = shardIndex;
         this.shardTotal = shardTotal;
 

@@ -40,15 +40,15 @@ public class Response<T> implements Serializable {
     /**
      * 失败消息
      */
-    private String msg;
+    private String message;
     /**
      * 成功数据
      */
     private T data;
 
-    public Response(int code, String msg) {
+    public Response(int code, String message) {
         this.code = code;
-        this.msg = msg;
+        this.message = message;
     }
 
     public Response(T data) {
@@ -80,19 +80,19 @@ public class Response<T> implements Serializable {
         return new Response<>(FAIL_CODE, null);
     }
 
-    public static <T> Response<T> fail(String msg) {
-        return new Response<>(FAIL_CODE, msg);
+    public static <T> Response<T> fail(String message) {
+        return new Response<>(FAIL_CODE, message);
     }
 
-    public static <T> Response<T> fail(int code, String msg) {
-        return new Response<>(code, msg);
+    public static <T> Response<T> fail(int code, String message) {
+        return new Response<>(code, message);
     }
 
     public static <T> Response<T> netError() {
         return new Response<>(NET_ERROR, null);
     }
 
-    public static <T> Response<T> netError(String msg) {
-        return new Response<>(NET_ERROR, msg);
+    public static <T> Response<T> netError(String message) {
+        return new Response<>(NET_ERROR, message);
     }
 }

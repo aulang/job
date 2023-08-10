@@ -52,6 +52,34 @@ public class JobHelper {
     }
 
     /**
+     * 获取任务当前调度时间
+     *
+     * @return 当前调度时间
+     */
+    public static Date getCurrentDateTime() {
+        JobContext jobContext = JobContext.getJobContext();
+        if (jobContext == null) {
+            return null;
+        }
+
+        return jobContext.getCurrentDateTime();
+    }
+
+    /**
+     * 获取任务上次调度时间
+     *
+     * @return 上次调度时间
+     */
+    public static Date getLastDateTime() {
+        JobContext jobContext = JobContext.getJobContext();
+        if (jobContext == null) {
+            return null;
+        }
+
+        return jobContext.getLastDateTime();
+    }
+
+    /**
      * 获取任务参数
      *
      * @return 任务参数

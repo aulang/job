@@ -317,7 +317,7 @@ public class TriggerService {
         JobLog jobLog = logService.newJobLog(jobInfo, triggerType, shardingParam, failRetry);
 
         param.setLogId(jobLog.getId());
-        param.setLastDateTime(jobInfo.getLastTime());
+        param.setLastDateTime(jobInfo.getLastTriggerTime());
         param.setLogDateTime(jobLog.getTriggerTime().getTime());
 
         Response<String> routeResult;
@@ -343,7 +343,7 @@ public class TriggerService {
         }
 
         jobLog.setExecutorAddress(address);
-        jobLog.setTriggerMsg(triggerResult.getMsg());
+        jobLog.setTriggerMsg(triggerResult.getMessage());
 
         if (triggerResult.isSuccess()) {
             jobLog.setTriggerCode(TriggerCodeEnum.SUCCESS.getCode());
@@ -373,7 +373,7 @@ public class TriggerService {
     }
 
     private Response<String> route(JobExecutor executor, TriggerParam param, RouteStrategyEnum routeStrategy,
-                                  List<String> addresses, int index) {
+                                   List<String> addresses, int index) {
         if (!CollectionUtils.isEmpty(addresses)) {
             if (routeStrategy == RouteStrategyEnum.BROADCAST) {
                 // 广播模式特殊处理

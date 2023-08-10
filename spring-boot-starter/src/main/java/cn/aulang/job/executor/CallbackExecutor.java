@@ -47,7 +47,7 @@ public class CallbackExecutor implements DisposableBean {
 
                 Response<String> result = adminApi.callback(param, accessToken);
                 if (!result.isSuccess()) {
-                    log.error("Executor callback fail: {}", result.getMsg());
+                    log.error("Executor callback fail: {}", result.getMessage());
                 }
             } catch (Exception e) {
                 log.error("Take callback queue item fail", e);

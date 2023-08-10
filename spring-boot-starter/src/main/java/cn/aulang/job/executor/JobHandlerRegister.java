@@ -187,7 +187,7 @@ public class JobHandlerRegister {
 
         Response<String> result = adminApi.registerHandler(handlerRegistryParam, accessToken);
         if (!result.isSuccess()) {
-            throw new RuntimeException("Register handler fail: " + result.getMsg());
+            throw new RuntimeException("Register handler fail: " + result.getMessage());
         }
     }
 

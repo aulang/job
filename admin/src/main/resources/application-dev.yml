@@ -4,6 +4,5 @@ spring:
     username: root
     password: 123456
 
-swater:
-  job:
-    url: http://127.0.0.1:8107
+al-job:
+  url: http://job-admin:8107
