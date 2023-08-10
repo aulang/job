@@ -3,8 +3,7 @@ package cn.aulang.job.admin.scheduler;
 import cn.aulang.job.admin.cron.CronExpression;
 import cn.aulang.job.admin.enums.ScheduleTypeEnum;
 import cn.aulang.job.admin.model.po.JobInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -14,11 +13,10 @@ import java.util.Date;
  *
  * @author wulang
  */
+@Slf4j
 public class JobScheduleHelper {
 
     public static final long PRE_READ_MILLISECONDS = 10000;
-
-    private static final Logger logger = LoggerFactory.getLogger(JobScheduleHelper.class);
 
     public static Date next(JobInfo jobInfo, Date fromTime) {
         if (fromTime == null) {
@@ -30,7 +28,7 @@ public class JobScheduleHelper {
             try {
                 return new CronExpression(jobInfo.getScheduleConf()).getNextValidTimeAfter(fromTime);
             } catch (ParseException e) {
-                logger.error("Get next scheduling time fail, corn: " + jobInfo.getScheduleConf(), e);
+                log.error("Get next scheduling time fail, corn: " + jobInfo.getScheduleConf(), e);
                 return null;
             }
         } else if (ScheduleTypeEnum.FIX_RATE == scheduleTypeEnum) {
@@ -48,7 +46,7 @@ public class JobScheduleHelper {
                 return nextTime.getTime();
             }
         } catch (Exception e) {
-            logger.error("Get next trigger time fail", e);
+            log.error("Get next trigger time fail", e);
         }
 
         return null;

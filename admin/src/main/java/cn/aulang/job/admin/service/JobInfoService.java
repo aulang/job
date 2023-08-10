@@ -1,5 +1,6 @@
 package cn.aulang.job.admin.service;
 
+import cn.aulang.common.crud.CRUDService;
 import cn.aulang.job.admin.cron.CronExpression;
 import cn.aulang.job.admin.dao.JobExecutorDao;
 import cn.aulang.job.admin.dao.JobInfoDao;
@@ -10,7 +11,6 @@ import cn.aulang.job.admin.enums.MisfireStrategyEnum;
 import cn.aulang.job.admin.enums.RouteStrategyEnum;
 import cn.aulang.job.admin.enums.ScheduleTypeEnum;
 import cn.aulang.job.admin.exception.JobException;
-import cn.aulang.job.admin.model.dto.DataXParamDTO;
 import cn.aulang.job.admin.model.po.JobChild;
 import cn.aulang.job.admin.model.po.JobExecutor;
 import cn.aulang.job.admin.model.po.JobGlueCode;
@@ -20,10 +20,8 @@ import cn.aulang.job.admin.scheduler.JobScheduleHelper;
 import cn.aulang.job.admin.utils.NumberUtils;
 import cn.aulang.job.core.enums.GlueTypeEnum;
 import cn.aulang.job.core.model.Response;
-import cn.aulang.common.crud.CRUDService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,28 +38,24 @@ import java.util.stream.Collectors;
  *
  * @author wulang
  */
+@Slf4j
 @Service
 public class JobInfoService extends CRUDService<JobInfo, Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobInfoService.class);
 
     private final JobLogDao logDao;
     private final JobInfoDao jobDao;
     private final JobExecutorDao executorDao;
     private final JobGlueCodeService glueCodeService;
-    private final JobDataXParamService dataXParamService;
 
     @Autowired
     public JobInfoService(JobLogDao logDao,
                           JobInfoDao jobDao,
                           JobExecutorDao executorDao,
-                          JobGlueCodeService glueCodeService,
-                          JobDataXParamService dataXParamService) {
+                          JobGlueCodeService glueCodeService) {
         this.logDao = logDao;
         this.jobDao = jobDao;
         this.executorDao = executorDao;
         this.glueCodeService = glueCodeService;
-        this.dataXParamService = dataXParamService;
     }
 
     @Override
@@ -178,14 +172,6 @@ public class JobInfoService extends CRUDService<JobInfo, Long> {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void save(JobInfo jobInfo, DataXParamDTO dataXParam) {
-        save(jobInfo);
-
-        dataXParam.setJobId(jobInfo.getId());
-        dataXParamService.save(dataXParam);
-    }
-
-    @Transactional(rollbackFor = Exception.class)
     public void save(JobInfo jobInfo, String glueSource) {
         save(jobInfo);
 
@@ -221,8 +207,6 @@ public class JobInfoService extends CRUDService<JobInfo, Long> {
         logDao.deleteByJobId(id);
         // 删除glueCode
         glueCodeService.deleteByJobId(id);
-        // 删除dataxParam
-        dataXParamService.deleteByJobId(id);
     }
 
     public Response<String> stop(Long id) {
@@ -245,7 +229,7 @@ public class JobInfoService extends CRUDService<JobInfo, Long> {
                 stop(id);
                 ++count;
             } catch (Exception e) {
-                logger.error("Failed to stop job, job id: " + id, e);
+                log.error("Failed to stop job, job id: " + id, e);
             }
         }
         return count;
@@ -286,7 +270,7 @@ public class JobInfoService extends CRUDService<JobInfo, Long> {
                     ++count;
                 }
             } catch (Exception e) {
-                logger.error("Failed to start job, job id: " + id, e);
+                log.error("Failed to start job, job id: " + id, e);
             }
         }
         return count;

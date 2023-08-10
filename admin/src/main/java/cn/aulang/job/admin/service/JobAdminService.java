@@ -12,9 +12,8 @@ import cn.aulang.job.core.model.HandlerRegisterParam;
 import cn.aulang.job.core.model.RegisterHandler;
 import cn.aulang.job.core.model.RegisterParam;
 import cn.aulang.job.core.model.Response;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -29,10 +28,9 @@ import java.util.stream.Stream;
  *
  * @author wulang
  */
+@Slf4j
 @Service
 public class JobAdminService {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobAdminService.class);
 
     private final JobLogService logService;
     private final JobInfoService jobService;
@@ -71,7 +69,7 @@ public class JobAdminService {
                 registerExecutor(param.getAppName(), param.getAppTitle(), param.getGlueTypes());
             }
         } catch (Exception e) {
-            logger.error("Executor register/beat fail", e);
+            log.error("Executor register/beat fail", e);
             return Response.fail(e.getMessage());
         }
 
@@ -97,7 +95,7 @@ public class JobAdminService {
             try {
                 logService.saveHandleInfo(jobLog);
             } catch (Exception e) {
-                logger.error("Executor callback fail", e);
+                log.error("Executor callback fail", e);
                 return Response.fail(e.getMessage());
             }
 
@@ -124,7 +122,7 @@ public class JobAdminService {
                 mailSendService.sendExeFail(jobInfo);
             }
         } catch (Exception e) {
-            logger.error("Executor callback fail", e);
+            log.error("Executor callback fail", e);
             return Response.fail(e.getMessage());
         }
 
@@ -147,7 +145,7 @@ public class JobAdminService {
                 logService.killRunningJobByAddress(param.getAddress(), "Executor unregister");
             }
         } catch (Exception e) {
-            logger.error("Executor unregister fail", e);
+            log.error("Executor unregister fail", e);
             return Response.fail(e.getMessage());
         }
 

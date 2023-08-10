@@ -220,34 +220,4 @@ public class JobBuildDTO {
 
         return jobInfo;
     }
-
-    public DataXParamDTO toDataXParam() {
-        DataXParamDTO dataXParam = new DataXParamDTO();
-
-        dataXParam.setJobId(jobId);
-        dataXParam.setSrcDsId(srcDsId);
-        dataXParam.setSrcTable(srcTable);
-        dataXParam.setSrcColumn(srcColumn);
-        dataXParam.setWhera(whera);
-        dataXParam.setQuerySql(querySql);
-
-        dataXParam.setSplitPk(splitPk);
-
-        dataXParam.setIncrementType(incrementType);
-        dataXParam.setIncrementKey(incrementKey);
-        dataXParam.setTimePattern(timePattern);
-        dataXParam.setIncrStartValue(incrStartValue);
-
-        dataXParam.setDestDsId(destDsId);
-        dataXParam.setDestTable(destTable);
-        dataXParam.setDestColumn(destColumn);
-        dataXParam.setWriteMode(writeMode);
-        dataXParam.setIsUpsert(isUpsert);
-        dataXParam.setUpsertKey(upsertKey);
-
-        dataXParam.setFlow(flow);
-        dataXParam.setBizType(bizType);
-
-        return dataXParam;
-    }
 }

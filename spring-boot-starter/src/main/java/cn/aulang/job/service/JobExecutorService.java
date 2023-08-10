@@ -45,7 +45,6 @@ public class JobExecutorService {
         return HANDLERS.get(name);
     }
 
-
     /**
      * 运行中任务
      */
@@ -191,12 +190,6 @@ public class JobExecutorService {
             if (jobHandler == null) {
                 return Response.fail("Job handler [" + param.getHandler() + "] not exists");
             }
-        } else if (glueType == GlueTypeEnum.DATAX) {
-            jobHandler = getHandler(GlueTypeEnum.DATAX.getName());
-            if (jobHandler == null) {
-                return Response.fail("Job handler [" + param.getHandler() + "] not exists");
-            }
-            isScript = true;
         } else if (glueType != null && glueType.isScript()) {
             if (StringUtils.isBlank(param.getGlueSource())) {
                 return Response.fail("Job handler [" + param.getHandler() + "] glue source is blank");

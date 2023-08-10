@@ -1,16 +1,15 @@
 package cn.aulang.job.admin.scheduler;
 
+import cn.aulang.common.core.concurrent.ThreadFactoryBuilder;
+import cn.aulang.common.core.utils.SimpleDateUtils;
 import cn.aulang.job.admin.config.JobProperties;
 import cn.aulang.job.admin.service.JobLogService;
 import cn.aulang.job.admin.service.JobRegistryService;
 import cn.aulang.job.admin.service.JobReportService;
 import cn.aulang.job.core.common.Constants;
 import cn.aulang.job.core.enums.RegisterTypeEnum;
-import cn.aulang.common.core.concurrent.ThreadFactoryBuilder;
-import cn.aulang.common.core.utils.SimpleDateUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author wulang
  */
+@Slf4j
 @Component
 public class JobTimingScheduler implements ApplicationContextAware, DisposableBean {
 
@@ -39,7 +39,6 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
     private static final String PORT = "server.port";
     private static final Integer DEFAULT_PORT = 8080;
     private static final String CONTEXT_PATH = "server.servlet.context-path";
-    private static final Logger logger = LoggerFactory.getLogger(JobTimingScheduler.class);
 
     private final JobProperties properties;
     private final JobLogService logService;
@@ -75,7 +74,7 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
         try {
             this.address = getRegisterUrl(applicationContext);
         } catch (UnknownHostException e) {
-            logger.error("Failed to get localhost IP address", e);
+            log.error("Failed to get localhost IP address", e);
             throw new RuntimeException(e);
         }
 
@@ -99,7 +98,7 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
         try {
             registryService.register(RegisterTypeEnum.ADMIN.name(), appName, address);
         } catch (Exception e) {
-            logger.error("JobAdmin beat fail", e);
+            log.error("JobAdmin beat fail", e);
         }
     }
 
@@ -107,7 +106,7 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
         try {
             registryService.deleteRegistry(RegisterTypeEnum.ADMIN.name(), appName, address);
         } catch (Exception e) {
-            logger.error("JobAdmin unregister fail", e);
+            log.error("JobAdmin unregister fail", e);
         }
     }
 
@@ -115,13 +114,13 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
         try {
             registryService.heathCheck();
         } catch (Exception e) {
-            logger.error("Executor node heath check fail", e);
+            log.error("Executor node heath check fail", e);
         }
 
         try {
             logService.heathCheck();
         } catch (Exception e) {
-            logger.error("Job running heath check fail", e);
+            log.error("Job running heath check fail", e);
         }
     }
 

@@ -4,15 +4,12 @@ import cn.aulang.common.core.utils.SimpleDateUtils;
 import cn.aulang.common.exception.NotFoundException;
 import cn.aulang.common.web.CRUDControllerSupport;
 import cn.aulang.job.admin.exception.JobException;
-import cn.aulang.job.admin.model.dto.DataXParamDTO;
 import cn.aulang.job.admin.model.dto.JobBuildDTO;
 import cn.aulang.job.admin.model.dto.TriggerDTO;
-import cn.aulang.job.admin.model.po.JobDataXParam;
 import cn.aulang.job.admin.model.po.JobGlueCode;
 import cn.aulang.job.admin.model.po.JobInfo;
 import cn.aulang.job.admin.model.vo.JobVO;
 import cn.aulang.job.admin.scheduler.JobScheduleHelper;
-import cn.aulang.job.admin.service.JobDataXParamService;
 import cn.aulang.job.admin.service.JobGlueCodeService;
 import cn.aulang.job.admin.service.JobInfoService;
 import cn.aulang.job.admin.service.TriggerService;
@@ -48,15 +45,12 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
     private final JobInfoService jobService;
     private final TriggerService triggerService;
     private final JobGlueCodeService glueCodeService;
-    private final JobDataXParamService dataXParamService;
 
     @Autowired
-    public JobInfoController(JobInfoService jobService, TriggerService triggerService,
-                             JobGlueCodeService glueCodeService, JobDataXParamService dataXParamService) {
+    public JobInfoController(JobInfoService jobService, TriggerService triggerService, JobGlueCodeService glueCodeService) {
         this.jobService = jobService;
         this.triggerService = triggerService;
         this.glueCodeService = glueCodeService;
-        this.dataXParamService = dataXParamService;
     }
 
     @Override
@@ -164,9 +158,6 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
 
         if (glueType == GlueTypeEnum.BEAN) {
             jobService.save(jobInfo);
-        } else if (glueType == GlueTypeEnum.DATAX) {
-            DataXParamDTO dataXParam = buildData.toDataXParam();
-            jobService.save(jobInfo, dataXParam);
         } else {
             String glueSource = buildData.getGlueSource();
             jobService.save(jobInfo, glueSource);
@@ -195,16 +186,5 @@ public class JobInfoController extends CRUDControllerSupport<JobInfo, Long> {
         }
 
         return Response.success(glueCode);
-    }
-
-    @GetMapping("/{id}/datax")
-    public Response<JobDataXParam> datax(@PathVariable("id") Long id) {
-        JobDataXParam dataXParam = dataXParamService.getByJobId(id);
-
-        if (dataXParam == null) {
-            throw NotFoundException.of(id);
-        }
-
-        return Response.success(dataXParam);
     }
 }

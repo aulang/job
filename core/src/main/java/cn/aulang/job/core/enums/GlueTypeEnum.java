@@ -8,7 +8,6 @@ package cn.aulang.job.core.enums;
 public enum GlueTypeEnum {
 
     BEAN("Bean", "处理任务", false, null, null),
-    DATAX("DataX", "数据交换任务", false, null, null),
     GROOVY("Groovy", "Groovy", true, "groovy", ".groovy"),
     SHELL("Shell", "Shell", true, "bash", ".sh"),
     PYTHON("Python", "Python", true, "python", ".py"),

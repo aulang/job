@@ -53,5 +53,4 @@ logging:
       max-file-size: 64MB
 
 al-job:
-  aes-key: VL07BKPQE1H8F4C6
   url: http://job-admin:8107

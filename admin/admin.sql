@@ -121,19 +121,6 @@ CREATE TABLE `job_glue_code`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT = '任务脚本代码表';
 
 
-CREATE TABLE `job_user`
-(
-    `id`         bigint(20)   unsigned NOT NULL AUTO_INCREMENT,
-    `username`   varchar(64)  NOT NULL COMMENT '账号',
-    `password`   varchar(64)  NOT NULL COMMENT '密码',
-    `role`       tinyint(4)   NOT NULL default 0 COMMENT '角色：0通用；1管理员',
-    `permission` varchar(255) DEFAULT NULL COMMENT '权限：执行器ID列表，多个逗号分割',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT = '用户表';
-INSERT INTO `job_user`(`id`, `username`, `password`, `role`, `permission`) VALUES (1, 'admin', 'e10adc3949ba59abbe56e057f20f883e', 1, NULL);
-
-
 CREATE TABLE `job_handler_registry`
 (
     `id`            bigint(20)   unsigned NOT NULL AUTO_INCREMENT,
@@ -163,66 +150,3 @@ CREATE TABLE `job_handler_param`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_handler_param` (`app_name`, `handler_name`, `name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT = '处理器参数字段表';
-
-
-CREATE TABLE `job_datasource`
-(
-    `id`           bigint ( 20 ) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
-    `name`         varchar(255)  NOT NULL COMMENT '数据源名称',
-    `type`         varchar(64)   NOT NULL COMMENT '数据源类型',
-    `group_name`   varchar(255)  DEFAULT NULL COMMENT '数据源分组名称',
-    `db_name`      varchar(64)   DEFAULT NULL COMMENT '数据库名',
-    `username`     varchar(255)  DEFAULT NULL COMMENT '用户名',
-    `password`     varchar(255)  DEFAULT NULL COMMENT '密码',
-    `jdbc_url`     varchar(512)  NOT NULL COMMENT 'jdbc连接',
-    `driver_class` varchar(255)  DEFAULT NULL COMMENT 'jdbc驱动类',
-    `zk_address`   varchar(255)  DEFAULT NULL COMMENT 'zookeeper地址',
-    `creator`      varchar(64)   DEFAULT NULL COMMENT '创建人',
-    `create_time`  datetime      DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `modifier`     varchar(64)   DEFAULT NULL COMMENT '更新人',
-    `update_time`  datetime      DEFAULT NULL COMMENT '更新时间',
-    `remark`       varchar(255)  DEFAULT NULL COMMENT '备注',
-    PRIMARY KEY (`id`),
-    KEY idx_datasource_group_name (`group_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT = '数据源表';
-
-
-CREATE TABLE `job_datax_param`
-(
-    `id`               bigint(20)   unsigned NOT NULL AUTO_INCREMENT,
-    `job_id`           bigint(20)   unsigned NOT NULL COMMENT '任务ID',
-    `src_ds_id`        bigint(20)   unsigned NOT NULL COMMENT '起始数据源',
-    `src_table`        varchar(128) DEFAULT NULL COMMENT '源表，和query_sql二选一',
-    `src_column`       text         DEFAULT NULL COMMENT '源数据列，关系型数据库为字段逗号分隔，非关系型为字段名称:类型逗号分隔',
-    `whera`            varchar(512) DEFAULT NULL COMMENT '过滤条件，和query_sql二选一',
-    `split_pk`         varchar(128) DEFAULT NULL COMMENT '整型主键任务切分字段',
-    `query_sql`        varchar(512) DEFAULT NULL COMMENT '查询语句',
-
-    `dest_ds_id`       bigint(20)   unsigned NOT NULL COMMENT '目标数据源',
-    `dest_table`       varchar(255) NOT NULL COMMENT '目标表',
-    `dest_column`      text         NOT NULL COMMENT '目标数据列，关系型数据库为字段逗号分隔，，非关系型为字段名称:类型逗号分隔',
-    `write_mode`       varchar(64)  DEFAULT NULL COMMENT '写模式，MySQL才有：insert、replace、update',
-    `is_upsert`        tinyint(1)   DEFAULT NULL COMMENT 'MongoDB插入更新',
-    `upsert_key`       varchar(128) DEFAULT NULL COMMENT 'MongoDB插入更新键',
-
-    `jvm_param`        varchar(255) DEFAULT NULL COMMENT 'JVM参数',
-    `increment_type`   tinyint(4)   DEFAULT NULL COMMENT '增量同步方式：1主键、2时间、3分区',
-    `increment_key`    varchar(128) DEFAULT NULL COMMENT '增量字段名称',
-    `incr_start_value` bigint(20)   DEFAULT NULL COMMENT '增量字段开始值：整型ID或者时间戳',
-    `time_pattern`     varchar(64)  DEFAULT NULL COMMENT '时间增量格式',
-    `replace_param`    varchar(255) DEFAULT NULL COMMENT '动态替换参数',
-    `partition_info`   varchar(255) DEFAULT NULL COMMENT '分区信息',
-
-    `channel`          int(11)      DEFAULT 1 COMMENT '通道数',
-    `speed`            int(11)      DEFAULT 2097152 COMMENT '通道处理速度，2M/s',
-    `batch_size`       int(11)      DEFAULT 256 COMMENT '批量处理记录数',
-    `percentage`       decimal(3,2) DEFAULT 0.02 COMMENT '允许错误百分比',
-    `record`           int(11)      DEFAULT COMMENT '允许错误记录数',
-
-    `flow`             tinyint(4)   DEFAULT NULL COMMENT '数据流向：0流入、1流出',
-    `biz_type`         tinyint(4)   DEFAULT NULL COMMENT '业务类型：0数据归集、1数据集成、2数据共享',
-
-    `update_time`      datetime     DEFAULT NULL COMMENT '更新时间',
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_datax_param` (`job_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT = '交换任务参数表';

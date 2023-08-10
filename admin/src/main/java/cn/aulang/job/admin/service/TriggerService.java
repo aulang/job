@@ -6,7 +6,6 @@ import cn.aulang.job.admin.enums.BlockStrategyEnum;
 import cn.aulang.job.admin.enums.MisfireStrategyEnum;
 import cn.aulang.job.admin.enums.RouteStrategyEnum;
 import cn.aulang.job.admin.enums.TriggerTypeEnum;
-import cn.aulang.job.admin.model.dto.DataXIncrDTO;
 import cn.aulang.job.admin.model.po.JobExecutor;
 import cn.aulang.job.admin.model.po.JobGlueCode;
 import cn.aulang.job.admin.model.po.JobInfo;
@@ -26,14 +25,12 @@ import cn.aulang.job.core.common.Constants;
 import cn.aulang.job.core.enums.GlueTypeEnum;
 import cn.aulang.job.core.enums.HandleCodeEnum;
 import cn.aulang.job.core.enums.TriggerCodeEnum;
-import cn.aulang.job.core.model.DataXParam;
 import cn.aulang.job.core.model.IdleBeatParam;
 import cn.aulang.job.core.model.KillParam;
 import cn.aulang.job.core.model.Response;
 import cn.aulang.job.core.model.TriggerParam;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -46,10 +43,9 @@ import java.util.List;
  *
  * @author wulang
  */
+@Slf4j
 @Service
 public class TriggerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(TriggerService.class);
 
     private final JobLogService logService;
     private final JobInfoService jobService;
@@ -57,18 +53,16 @@ public class TriggerService {
     private final JobRegistryService registryService;
     private final JobExecutorService executorService;
     private final JobGlueCodeService glueCodeService;
-    private final JobDataXParamService dataXParamService;
 
     private final JobProperties properties;
 
     @Autowired
-    public TriggerService(JobInfoService jobService,
-                          JobLogService logService,
+    public TriggerService(JobLogService logService,
+                          JobInfoService jobService,
                           MailSendService mailSendService,
                           JobRegistryService registryService,
                           JobExecutorService executorService,
                           JobGlueCodeService glueCodeService,
-                          JobDataXParamService dataXParamService,
                           JobProperties properties) {
         this.jobService = jobService;
         this.logService = logService;
@@ -76,7 +70,6 @@ public class TriggerService {
         this.registryService = registryService;
         this.executorService = executorService;
         this.glueCodeService = glueCodeService;
-        this.dataXParamService = dataXParamService;
 
         this.properties = properties;
     }
@@ -100,7 +93,7 @@ public class TriggerService {
     public void trigger(JobInfo jobInfo, String executorParam, List<String> addresses) {
         JobExecutor executor = executorService.get(jobInfo.getExecutorId());
         if (executor == null) {
-            logger.error("Executor id: {} not exists", jobInfo.getExecutorId());
+            log.error("Executor id: {} not exists", jobInfo.getExecutorId());
             return;
         }
 
@@ -112,7 +105,7 @@ public class TriggerService {
     private void trigger(JobInfo jobInfo, TriggerTypeEnum triggerType) {
         JobExecutor executor = executorService.get(jobInfo.getExecutorId());
         if (executor == null) {
-            logger.error("Executor id: {} not exists", jobInfo.getExecutorId());
+            log.error("Executor id: {} not exists", jobInfo.getExecutorId());
             return;
         }
 
@@ -123,7 +116,7 @@ public class TriggerService {
         if (triggerCurrentTime != null && triggerCurrentTime < (System.currentTimeMillis() - 2 * JobScheduleHelper.PRE_READ_MILLISECONDS)) {
             // 过期的调度，忽略策略，不做任何事丢弃
             if (misfireStrategy == MisfireStrategyEnum.DO_NOTHING) {
-                logger.warn("Misfire job id: {} do nothing!", jobInfo.getId());
+                log.warn("Misfire job id: {} do nothing!", jobInfo.getId());
                 return;
             }
             // 过期补偿
@@ -141,7 +134,7 @@ public class TriggerService {
         if (blockStrategy == BlockStrategyEnum.SERIAL_EXECUTION) {
             // 单机串行
             if (checkRunningJobs(runningJobs)) {
-                logger.warn("Job id: {} have running instance, skip this trigger!", jobInfo.getId());
+                log.warn("Job id: {} have running instance, skip this trigger!", jobInfo.getId());
                 return;
             }
         } else if (blockStrategy == BlockStrategyEnum.PARALLEL_EXECUTION) {
@@ -158,18 +151,18 @@ public class TriggerService {
 
             // 没有空闲的执行器
             if (CollectionUtils.isEmpty(addresses)) {
-                logger.warn("Job id: {} executor has no idle instance, skip this trigger!", jobInfo.getId());
+                log.warn("Job id: {} executor has no idle instance, skip this trigger!", jobInfo.getId());
                 return;
             }
         } else if (blockStrategy == BlockStrategyEnum.DISCARD_LATER) {
             // 丢弃后续调度
             if (checkRunningJobs(runningJobs)) {
-                logger.warn("Job id: {} has running instance, drop this trigger!", jobInfo.getId());
+                log.warn("Job id: {} has running instance, drop this trigger!", jobInfo.getId());
                 return;
             }
         } else if (blockStrategy == BlockStrategyEnum.COVER_EARLY) {
             // 覆盖之前调度
-            logger.warn("Job id: {} has running instance, kill early running job!", jobInfo.getId());
+            log.warn("Job id: {} has running instance, kill early running job!", jobInfo.getId());
             // 杀死正在运行的
             killRunningJobs(runningJobs);
         }
@@ -189,7 +182,7 @@ public class TriggerService {
         }
 
         if (CollectionUtils.isEmpty(addresses)) {
-            logger.error("Executor: {} no instance available", appName);
+            log.error("Executor: {} no instance available", appName);
             logService.saveFailLog(jobInfo, triggerType, null, "Executor no instance available");
             mailSendService.sendTriggerFail(jobInfo);
             return;
@@ -206,12 +199,11 @@ public class TriggerService {
         }
 
         TriggerParam param;
-        DataXIncrDTO incrDTO = new DataXIncrDTO();
         try {
-            param = buildTriggerParam(jobInfo, incrDTO);
+            param = buildTriggerParam(jobInfo);
         } catch (Exception e) {
             logService.saveFailLog(jobInfo, triggerType, null, e.getMessage());
-            logger.error("Fail to build TriggerParam", e);
+            log.error("Fail to build TriggerParam", e);
             mailSendService.sendTriggerFail(jobInfo);
             return;
         }
@@ -224,12 +216,12 @@ public class TriggerService {
 
             for (int i = 0; i < size; i++) {
                 param.setShardIndex(i);
-                processTrigger(jobInfo, executor, addresses, param, incrDTO, routeStrategy, triggerType, failRetry,
+                processTrigger(jobInfo, executor, addresses, param, routeStrategy, triggerType, failRetry,
                         param.getShardIndex(), param.getShardTotal());
             }
         } else {
             // 非广播模式，调度一次
-            processTrigger(jobInfo, executor, addresses, param, incrDTO, routeStrategy, triggerType, failRetry,
+            processTrigger(jobInfo, executor, addresses, param, routeStrategy, triggerType, failRetry,
                     param.getShardIndex(), param.getShardTotal());
         }
     }
@@ -275,7 +267,7 @@ public class TriggerService {
         }
     }
 
-    private TriggerParam buildTriggerParam(JobInfo jobInfo, DataXIncrDTO incrDTO) throws Exception {
+    private TriggerParam buildTriggerParam(JobInfo jobInfo) {
         TriggerParam param = new TriggerParam();
 
         GlueTypeEnum glueType = GlueTypeEnum.match(jobInfo.getGlueType());
@@ -287,12 +279,6 @@ public class TriggerService {
             // 设置处理器和参数
             param.setHandler(jobInfo.getExecutorHandler());
             param.setHandlerParam(jobInfo.getExecutorParam());
-        } else if (glueType == GlueTypeEnum.DATAX) {
-            // 构建DataX参数
-            DataXParam dataXParam = dataXParamService.buildDataXParam(jobInfo, incrDTO);
-            String handlerParam = JobDataXParamService.JSON_MAPPER.toJson(dataXParam);
-            param.setHandler(glueType.getName());
-            param.setHandlerParam(handlerParam);
         } else if (glueType.isScript()) {
             // 获取和设置任务脚本代码
             JobGlueCode code = glueCodeService.getByJobId(jobInfo.getId());
@@ -311,7 +297,7 @@ public class TriggerService {
         return param;
     }
 
-    private void processTrigger(JobInfo jobInfo, JobExecutor executor, List<String> addresses, TriggerParam param, DataXIncrDTO incrDTO,
+    private void processTrigger(JobInfo jobInfo, JobExecutor executor, List<String> addresses, TriggerParam param,
                                 RouteStrategyEnum routeStrategy, TriggerTypeEnum triggerType, int failRetry, int index, int total) {
         String shardingParam = index + Constants.SPLIT_DIVIDE + total;
         JobLog jobLog = logService.newJobLog(jobInfo, triggerType, shardingParam, failRetry);
@@ -324,7 +310,7 @@ public class TriggerService {
         try {
             routeResult = route(executor, param, routeStrategy, addresses, index);
         } catch (Exception e) {
-            logger.error("Executor address route strategy fail", e);
+            log.error("Executor address route strategy fail", e);
             routeResult = Response.fail(e.getMessage());
         }
 
@@ -333,7 +319,7 @@ public class TriggerService {
             address = routeResult.getData();
         }
 
-        logger.info("Start trigger job, job info: {}", jobInfo);
+        log.info("Start trigger job, job info: {}", jobInfo);
 
         Response<String> triggerResult;
         if (address != null) {
@@ -348,8 +334,6 @@ public class TriggerService {
         if (triggerResult.isSuccess()) {
             jobLog.setTriggerCode(TriggerCodeEnum.SUCCESS.getCode());
             jobLog.setHandleCode(HandleCodeEnum.RUNNING.getCode());
-
-            dataXParamService.refreshIncrStartValue(incrDTO);
         } else {
             jobLog.setTriggerCode(TriggerCodeEnum.FAIL.getCode());
             mailSendService.sendTriggerFail(jobInfo);
@@ -357,13 +341,13 @@ public class TriggerService {
 
         logService.saveTriggerInfo(jobLog);
 
-        logger.info("End trigger job, job info: {}", jobInfo);
+        log.info("End trigger job, job info: {}", jobInfo);
 
         if (address != null && !triggerResult.isSuccess() && failRetry > 0) {
-            logger.warn("Job fail retry, job info: {}", jobInfo);
+            log.warn("Job fail retry, job info: {}", jobInfo);
             // 失败重试
             triggerType = TriggerTypeEnum.RETRY;
-            processTrigger(jobInfo, executor, addresses, param, incrDTO, routeStrategy, triggerType, --failRetry, index, total);
+            processTrigger(jobInfo, executor, addresses, param, routeStrategy, triggerType, --failRetry, index, total);
         }
 
         if (triggerResult.isSuccess()) {
@@ -421,7 +405,7 @@ public class TriggerService {
         }
 
         for (JobInfo childJob : childJobs) {
-            logger.info("Trigger job child, parent job:{},  child job info: {}", parentId, childJob);
+            log.info("Trigger job child, parent job:{},  child job info: {}", parentId, childJob);
             childJob.setTriggerLastTime(System.currentTimeMillis());
             trigger(childJob, TriggerTypeEnum.PARENT);
         }
@@ -432,7 +416,7 @@ public class TriggerService {
             ExecutorClient client = new ExecutorClient(address);
             return client.run(param, properties.getAccessToken());
         } catch (Exception e) {
-            logger.error("Job trigger error, please check if the executor[" + address + "] is running", e);
+            log.error("Job trigger error, please check if the executor[" + address + "] is running", e);
             return Response.fail(e.getMessage());
         }
     }

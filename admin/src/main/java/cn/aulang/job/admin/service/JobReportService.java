@@ -1,13 +1,12 @@
 package cn.aulang.job.admin.service;
 
+import cn.aulang.common.core.utils.SimpleDateUtils;
+import cn.aulang.common.crud.CRUDService;
 import cn.aulang.job.admin.dao.JobLogDao;
 import cn.aulang.job.admin.dao.JobReportDao;
 import cn.aulang.job.admin.model.po.JobReport;
 import cn.aulang.job.admin.model.vo.JobDailyReportVO;
-import cn.aulang.common.crud.CRUDService;
-import cn.aulang.common.core.utils.SimpleDateUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +17,9 @@ import java.util.Date;
  *
  * @author wulang
  */
+@Slf4j
 @Service
 public class JobReportService extends CRUDService<JobReport, Long> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobReportService.class);
 
     private final JobLogDao logDao;
     private final JobReportDao reportDao;
@@ -41,7 +39,7 @@ public class JobReportService extends CRUDService<JobReport, Long> {
         try {
             refreshLogReport(3);
         } catch (Exception e) {
-            logger.error("Refresh last 3 days job report fail", e);
+            log.error("Refresh last 3 days job report fail", e);
         }
     }
 
