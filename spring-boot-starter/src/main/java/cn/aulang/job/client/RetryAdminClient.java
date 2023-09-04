@@ -5,6 +5,7 @@ import cn.aulang.job.core.model.CallbackParam;
 import cn.aulang.job.core.model.HandlerRegisterParam;
 import cn.aulang.job.core.model.RegisterParam;
 import cn.aulang.job.core.model.Response;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author wulang
  */
+@Getter
 public class RetryAdminClient implements AdminApi {
 
     protected final int retry;
@@ -25,14 +27,6 @@ public class RetryAdminClient implements AdminApi {
     public RetryAdminClient(String address, int retry) {
         this.retry = (retry > 0 ? retry : 3);
         this.client = new AdminClient(address);
-    }
-
-    public int getRetry() {
-        return retry;
-    }
-
-    public AdminClient getClient() {
-        return client;
     }
 
     @Override

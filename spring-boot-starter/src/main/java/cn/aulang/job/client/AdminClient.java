@@ -6,6 +6,8 @@ import cn.aulang.job.core.model.CallbackParam;
 import cn.aulang.job.core.model.HandlerRegisterParam;
 import cn.aulang.job.core.model.RegisterParam;
 import cn.aulang.job.core.model.Response;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,6 +26,8 @@ import java.util.List;
  * @author wulang
  */
 @Slf4j
+@Getter
+@Setter
 public class AdminClient implements AdminApi {
 
     private String address;
@@ -35,22 +39,6 @@ public class AdminClient implements AdminApi {
 
     public AdminClient(String address, RestTemplate restTemplate) {
         this.address = address;
-        this.restTemplate = restTemplate;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public RestTemplate getRestTemplate() {
-        return restTemplate;
-    }
-
-    public void setRestTemplate(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

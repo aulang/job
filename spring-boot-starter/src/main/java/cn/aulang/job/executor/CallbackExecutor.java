@@ -24,7 +24,7 @@ public class CallbackExecutor implements DisposableBean {
 
     protected final LinkedBlockingQueue<CallbackParam> callbackQueue = new LinkedBlockingQueue<>();
     protected final ExecutorService executorService = Executors.newSingleThreadExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobExecutorCallbackThread-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobCallbackExecutor-%d").build());
 
     public CallbackExecutor(AdminApi adminApi, String accessToken) {
         this.adminApi = adminApi;
@@ -59,8 +59,8 @@ public class CallbackExecutor implements DisposableBean {
     public void destroy() {
         executorService.shutdownNow();
 
-        if (callbackQueue.size() > 0) {
-            log.warn("JobTriggerScheduler shutdown, callback queue size: {}", callbackQueue.size());
+        if (!callbackQueue.isEmpty()) {
+            log.warn("JobCallbackExecutor shutdown, callback queue size: {}", callbackQueue.size());
         }
     }
 }

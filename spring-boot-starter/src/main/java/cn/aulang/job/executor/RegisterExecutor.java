@@ -44,7 +44,7 @@ public class RegisterExecutor implements ApplicationContextAware, InitializingBe
     protected ApplicationContext applicationContext;
 
     protected final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobExecutorBeatThread-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobRegisterExecutor-%d").build());
 
     public RegisterExecutor(AdminApi adminApi, JobProperties properties) {
         this.adminApi = adminApi;
