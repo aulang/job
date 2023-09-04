@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class CleanLogExecutor implements DisposableBean {
 
     protected final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobExecutorCleanLogThread-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobCleanLogExecutor-%d").build());
 
     protected int logRetentionDays;
 

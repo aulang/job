@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 public class JobHandlerExecutor implements DisposableBean {
 
     protected final ExecutorService executorService = Executors.newCachedThreadPool(
-            new ThreadFactoryBuilder().setNameFormat("JobExecutorHandlerThread-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobHandlerExecutor-%d").build());
 
     public Future<?> submit(IJobHandler jobHandler, TriggerParam param, CallbackExecutor callback) {
         return executorService.submit(new JobThread(jobHandler, param, callback));

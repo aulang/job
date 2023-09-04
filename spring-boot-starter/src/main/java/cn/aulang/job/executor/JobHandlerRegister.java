@@ -148,21 +148,17 @@ public class JobHandlerRegister {
      * @param jobHandlers 处理器列表
      */
     protected void registerHandler(Collection<IJobHandler> jobHandlers) {
-        List<RegisterHandler> handlers = new ArrayList<>();
-
-        for (IJobHandler jobHandler : jobHandlers) {
+        List<RegisterHandler> handlers = jobHandlers.parallelStream().map(jobHandler -> {
             RegisterHandler registryHandler = new RegisterHandler();
             registryHandler.setName(jobHandler.name());
             registryHandler.setTitle(jobHandler.title());
 
             List<HandlerParamField> paramFields = null;
 
-            if (jobHandler instanceof ParamJobHandler) {
-                Class<?> paramType = ((ParamJobHandler<?>) jobHandler).getParamClass();
-                paramFields = buildHandlerParam(paramType);
-            } else if (jobHandler instanceof MethodJobHandler) {
-                Method method = ((MethodJobHandler) jobHandler).method();
-
+            if (jobHandler instanceof ParamJobHandler<?> paramJobHandler) {
+                paramFields = buildHandlerParam(paramJobHandler.getParamClass());
+            } else if (jobHandler instanceof MethodJobHandler methodJobHandler) {
+                Method method = methodJobHandler.method();
                 Class<?>[] parameterTypes = method.getParameterTypes();
 
                 if (parameterTypes.length == 1) {
@@ -171,12 +167,10 @@ public class JobHandlerRegister {
                 }
             }
 
-            if (paramFields != null) {
-                registryHandler.setParamFields(paramFields);
-            }
+            registryHandler.setParamFields(paramFields);
 
-            handlers.add(registryHandler);
-        }
+            return registryHandler;
+        }).toList();
 
         if (handlers.isEmpty()) {
             throw new IllegalStateException("Job executor has no handler!");

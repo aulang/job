@@ -1,5 +1,8 @@
 package cn.aulang.job.service;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -9,6 +12,8 @@ import java.util.concurrent.Future;
  *
  * @author wulang
  */
+@Getter
+@Setter
 public class RunningJob {
 
     private long jobId;
@@ -19,7 +24,7 @@ public class RunningJob {
 
     private Map<String, Object> attributes;
 
-    public RunningJob(long jobId, long logId, long logDateTime, boolean isScript,  Future<?> future) {
+    public RunningJob(long jobId, long logId, long logDateTime, boolean isScript, Future<?> future) {
         this.jobId = jobId;
         this.logId = logId;
         this.isScript = isScript;
@@ -44,53 +49,5 @@ public class RunningJob {
         }
 
         return (T) attributes.get(key);
-    }
-
-    public long getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(long jobId) {
-        this.jobId = jobId;
-    }
-
-    public long getLogId() {
-        return logId;
-    }
-
-    public void setLogId(long logId) {
-        this.logId = logId;
-    }
-
-    public long getLogDateTime() {
-        return logDateTime;
-    }
-
-    public void setLogDateTime(long logDateTime) {
-        this.logDateTime = logDateTime;
-    }
-
-    public Future<?> getFuture() {
-        return future;
-    }
-
-    public void setFuture(Future<?> future) {
-        this.future = future;
-    }
-
-    public boolean isScript() {
-        return isScript;
-    }
-
-    public void setScript(boolean script) {
-        isScript = script;
-    }
-
-    public Map<String, Object> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
     }
 }
