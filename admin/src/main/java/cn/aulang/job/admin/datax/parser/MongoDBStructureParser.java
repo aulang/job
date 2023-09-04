@@ -86,7 +86,7 @@ public class MongoDBStructureParser implements DatabaseStructureParser {
         MongoCollection<Document> collection = mongoClient.getDatabase(dbName).getCollection(tableName);
         Document document = collection.find().first();
         List<Column> list = new ArrayList<>();
-        if (document == null || document.size() == 0) {
+        if (document == null || document.isEmpty()) {
             return list;
         }
 
@@ -119,7 +119,7 @@ public class MongoDBStructureParser implements DatabaseStructureParser {
         MongoCollection<Document> collection = mongoClient.getDatabase(dbName).getCollection(tableName);
         Document document = collection.find().first();
         List<String> list = new ArrayList<>();
-        if (document == null || document.size() == 0) {
+        if (document == null || document.isEmpty()) {
             return list;
         }
 

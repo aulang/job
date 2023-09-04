@@ -14,7 +14,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'com.github.ben-manes.caffeine:caffeine'
-    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 
     implementation 'commons-io:commons-io'
     implementation 'org.apache.commons:commons-lang3'
@@ -27,6 +26,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    implementation 'org.mongodb:mongo-java-driver:3.12.13'
 }
 
 tasks.register("bootRunDev") {
