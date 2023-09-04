@@ -32,7 +32,7 @@ public class CleanLogExecutor implements DisposableBean {
 
     public CleanLogExecutor(JobProperties properties) {
         // 初始化日志
-        JobFileAppender.initLogPath(JobFileAppender.getLogPath());
+        JobFileAppender.initLogPath(properties.getLogPath());
 
         this.logRetentionDays = properties.getLogRetentionDays();
 

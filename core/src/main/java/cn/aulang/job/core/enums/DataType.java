@@ -1,10 +1,13 @@
 package cn.aulang.job.core.enums;
 
+import lombok.Getter;
+
 /**
  * 数据类型
  *
  * @author wulang
  */
+@Getter
 public enum DataType {
 
     INTEGER("Integer", "整型"),
@@ -26,13 +29,5 @@ public enum DataType {
     DataType(String code, String title) {
         this.code = code;
         this.title = title;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

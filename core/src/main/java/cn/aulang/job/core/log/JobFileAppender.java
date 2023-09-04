@@ -2,6 +2,7 @@ package cn.aulang.job.core.log;
 
 import cn.aulang.job.core.common.Constants;
 import cn.aulang.job.core.model.LogResult;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -27,39 +28,32 @@ public class JobFileAppender {
     private static final String LOG_FILE_EXTENSION = ".log";
 
     /**
-     * 日志文件根目录
+     * 日志目录
      */
-    private static String logBasePath = "/data/logs/job";
+    @Getter
+    private static String logPath = "/data/log/job";
     /**
      * Glue代码目录
      */
-    private static String glueSrcPath = logBasePath + "/glue/src";
+    @Getter
+    private static String glueSrcPath = logPath + "/glue/src";
 
-    public static void initLogPath(String logPath) {
+    public static void initLogPath(String path) {
         // 初始化日志目录
-
-        if (StringUtils.isNotBlank(logPath)) {
-            logBasePath = logPath;
+        if (StringUtils.isNotBlank(path)) {
+            logPath = path;
         }
 
         // 创建日志文件根目录
-        File logPathDir = new File(logBasePath);
+        File logPathDir = new File(logPath);
         logPathDir.mkdirs();
 
-        logBasePath = logPathDir.getPath();
+        logPath = logPathDir.getPath();
 
         // 创建Glue代码目录
         File glueBaseDir = new File(logPathDir, "/glue/src");
         glueBaseDir.mkdirs();
         glueSrcPath = glueBaseDir.getPath();
-    }
-
-    public static String getLogPath() {
-        return logBasePath;
-    }
-
-    public static String getGlueSrcPath() {
-        return glueSrcPath;
     }
 
     /**
