@@ -36,7 +36,7 @@ public class JobTriggerScheduler implements DisposableBean {
     private final ExecutorService delayQueueExecutor;
     private final DelayQueue<DelayTriggerJob> triggerQueue = new DelayQueue<>();
     private final ScheduledExecutorService schedulerExecutor = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobAdminTriggerScheduler-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobTriggerScheduler-%d").build());
 
     @Autowired
     public JobTriggerScheduler(JobInfoService jobService, TriggerService triggerService) {
@@ -45,7 +45,7 @@ public class JobTriggerScheduler implements DisposableBean {
 
         int threadCount = Math.max(Runtime.getRuntime().availableProcessors(), 4);
         delayQueueExecutor = Executors.newFixedThreadPool(threadCount,
-                new ThreadFactoryBuilder().setNameFormat("JobAdminDelayQueueThread-%d").build());
+                new ThreadFactoryBuilder().setNameFormat("JobDelayQueueExecutor-%d").build());
         for (int i = 0; i < threadCount; i++) {
             delayQueueExecutor.execute(this::delay);
         }
@@ -137,7 +137,7 @@ public class JobTriggerScheduler implements DisposableBean {
         schedulerExecutor.shutdownNow();
         delayQueueExecutor.shutdownNow();
 
-        if (triggerQueue.size() > 0) {
+        if (!triggerQueue.isEmpty()) {
             log.warn("JobTriggerScheduler shutdown, trigger queue size: {}", triggerQueue.size());
         }
     }

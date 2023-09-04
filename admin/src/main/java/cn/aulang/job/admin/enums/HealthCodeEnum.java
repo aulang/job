@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 节点健康状态枚举
  *
  * @author wulang
  */
+@Getter
 public enum HealthCodeEnum {
 
     ONLINE(1, "健康"),
@@ -17,13 +20,5 @@ public enum HealthCodeEnum {
     HealthCodeEnum(int code, String msg) {
         this.code = code;
         this.msg = msg;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMsg() {
-        return msg;
     }
 }

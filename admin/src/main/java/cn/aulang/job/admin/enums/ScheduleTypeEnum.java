@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 调度类型
  *
  * @author wulang
  */
+@Getter
 public enum ScheduleTypeEnum {
 
     CRON("CRON"),
@@ -14,10 +17,6 @@ public enum ScheduleTypeEnum {
 
     ScheduleTypeEnum(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public static ScheduleTypeEnum match(String name, ScheduleTypeEnum defaultItem) {

@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 任务调度触发类型
  *
  * @author wulang
  */
+@Getter
 public enum TriggerTypeEnum {
 
     MANUAL("手动触发"),
@@ -18,10 +21,6 @@ public enum TriggerTypeEnum {
 
     TriggerTypeEnum(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public static TriggerTypeEnum match(String name, TriggerTypeEnum defaultItem) {

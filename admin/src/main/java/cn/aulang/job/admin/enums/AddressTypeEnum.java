@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 地址类型
  *
  * @author wulang
  */
+@Getter
 public enum AddressTypeEnum {
 
     AUTO(0, "自动注册"),
@@ -16,13 +19,5 @@ public enum AddressTypeEnum {
     AddressTypeEnum(int code, String title) {
         this.code = code;
         this.title = title;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

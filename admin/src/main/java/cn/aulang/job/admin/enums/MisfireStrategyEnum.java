@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 调度过期策略
  *
  * @author wulang
  */
+@Getter
 public enum MisfireStrategyEnum {
     /**
      * 无操作
@@ -19,10 +22,6 @@ public enum MisfireStrategyEnum {
 
     MisfireStrategyEnum(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public static MisfireStrategyEnum match(String name, MisfireStrategyEnum defaultItem) {

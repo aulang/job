@@ -64,7 +64,7 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
             ++threadCount;
         }
         schedulerExecutor = Executors.newScheduledThreadPool(threadCount,
-                new ThreadFactoryBuilder().setNameFormat("JobAdminTimingScheduler-%d").build());
+                new ThreadFactoryBuilder().setNameFormat("JobTimingScheduler-%d").build());
     }
 
     @Override

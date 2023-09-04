@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 路由策略
  *
  * @author wulang
  */
+@Getter
 public enum RouteStrategyEnum {
 
     FIRST("第一个"),
@@ -18,14 +21,10 @@ public enum RouteStrategyEnum {
     BUSY_OVER("忙碌转移"),
     BROADCAST("广播模式");
 
-    RouteStrategyEnum(String title) {
-        this.title = title;
-    }
-
     private final String title;
 
-    public String getTitle() {
-        return title;
+    RouteStrategyEnum(String title) {
+        this.title = title;
     }
 
     public static RouteStrategyEnum match(String name, RouteStrategyEnum defaultItem) {
