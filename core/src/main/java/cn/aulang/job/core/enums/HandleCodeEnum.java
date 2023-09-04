@@ -1,10 +1,13 @@
 package cn.aulang.job.core.enums;
 
+import lombok.Getter;
+
 /**
  * 任务执行结果代码
  *
  * @author wulang
  */
+@Getter
 public enum HandleCodeEnum {
 
     RUNNING(0, "运行中"),
@@ -26,13 +29,5 @@ public enum HandleCodeEnum {
     HandleCodeEnum(int code, String msg) {
         this.code = code;
         this.msg = msg;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getMsg() {
-        return msg;
     }
 }

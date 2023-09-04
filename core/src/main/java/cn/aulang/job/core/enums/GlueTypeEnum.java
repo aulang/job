@@ -1,10 +1,13 @@
 package cn.aulang.job.core.enums;
 
+import lombok.Getter;
+
 /**
  * Glue代码类型
  *
  * @author wulang
  */
+@Getter
 public enum GlueTypeEnum {
 
     BEAN("Bean", "处理任务", false, null, null),
@@ -43,26 +46,6 @@ public enum GlueTypeEnum {
         this.isScript = isScript;
         this.cmd = cmd;
         this.suffix = suffix;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public boolean isScript() {
-        return isScript;
-    }
-
-    public String getCmd() {
-        return cmd;
-    }
-
-    public String getSuffix() {
-        return suffix;
     }
 
     public static GlueTypeEnum match(String name) {
