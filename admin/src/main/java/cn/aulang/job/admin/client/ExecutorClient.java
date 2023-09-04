@@ -8,7 +8,8 @@ import cn.aulang.job.core.model.LogParam;
 import cn.aulang.job.core.model.LogResult;
 import cn.aulang.job.core.model.Response;
 import cn.aulang.job.core.model.TriggerParam;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.ParameterizedTypeReference;
@@ -24,12 +25,14 @@ import org.springframework.web.client.RestTemplate;
  *
  * @author wulang
  */
-@Data
 @Slf4j
+@Getter
+@Setter
 public class ExecutorClient implements ExecutorApi {
 
+    public static RestTemplate restTemplate = new RestTemplate();
+
     private String address;
-    private RestTemplate restTemplate = new RestTemplate();
 
     public ExecutorClient() {
     }
@@ -52,6 +55,7 @@ public class ExecutorClient implements ExecutorApi {
         if (StringUtils.isNotBlank(accessToken)) {
             headers.add(Constants.ACCESS_TOKEN_HEADER, accessToken);
         }
+
         return new HttpEntity<>(body, headers);
     }
 

@@ -1,12 +1,11 @@
 package cn.aulang.job.admin.scheduler;
 
+import cn.aulang.common.core.concurrent.ThreadFactoryBuilder;
 import cn.aulang.job.admin.enums.JobStatusEnum;
 import cn.aulang.job.admin.model.po.JobInfo;
 import cn.aulang.job.admin.service.JobInfoService;
 import cn.aulang.job.admin.service.TriggerService;
-import cn.aulang.common.core.concurrent.ThreadFactoryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,10 +26,9 @@ import java.util.concurrent.TimeUnit;
  *
  * @author wulang
  */
+@Slf4j
 @Component
 public class JobTriggerScheduler implements DisposableBean {
-
-    private static final Logger logger = LoggerFactory.getLogger(JobTriggerScheduler.class);
 
     private final JobInfoService jobService;
     private final TriggerService triggerService;
@@ -38,7 +36,7 @@ public class JobTriggerScheduler implements DisposableBean {
     private final ExecutorService delayQueueExecutor;
     private final DelayQueue<DelayTriggerJob> triggerQueue = new DelayQueue<>();
     private final ScheduledExecutorService schedulerExecutor = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobAdminTriggerScheduler-%d").build());
+            new ThreadFactoryBuilder().setNameFormat("JobTriggerScheduler-%d").build());
 
     @Autowired
     public JobTriggerScheduler(JobInfoService jobService, TriggerService triggerService) {
@@ -47,7 +45,7 @@ public class JobTriggerScheduler implements DisposableBean {
 
         int threadCount = Math.max(Runtime.getRuntime().availableProcessors(), 4);
         delayQueueExecutor = Executors.newFixedThreadPool(threadCount,
-                new ThreadFactoryBuilder().setNameFormat("JobAdminDelayQueueThread-%d").build());
+                new ThreadFactoryBuilder().setNameFormat("JobDelayQueueExecutor-%d").build());
         for (int i = 0; i < threadCount; i++) {
             delayQueueExecutor.execute(this::delay);
         }
@@ -60,7 +58,7 @@ public class JobTriggerScheduler implements DisposableBean {
         try {
             roundTriggerJob();
         } catch (Exception e) {
-            logger.error("Round trigger job fail", e);
+            log.error("Round trigger job fail", e);
         }
     }
 
@@ -78,7 +76,7 @@ public class JobTriggerScheduler implements DisposableBean {
                 Long jobTriggerNextTime = JobScheduleHelper.nextTime(jobInfo, new Date(currentTriggerTime));
 
                 if (jobTriggerNextTime == null) {
-                    logger.error("Job next trigger time is null, will stop job, jobId: {}, scheduleType: {}, scheduleConf: {}",
+                    log.error("Job next trigger time is null, will stop job, jobId: {}, scheduleType: {}, scheduleConf: {}",
                             jobInfo.getId(), jobInfo.getScheduleType(), jobInfo.getScheduleConf());
 
                     jobTriggerNextTime = 0L;
@@ -98,10 +96,10 @@ public class JobTriggerScheduler implements DisposableBean {
                     // 下次触发时间
                     jobInfo.setTriggerNextTime(jobTriggerNextTime);
 
-                    logger.info("Get job trigger lock success, push job to DelayQueue, job info: {}", jobInfo);
+                    log.info("Get job trigger lock success, push job to DelayQueue, job info: {}", jobInfo);
 
                     if (!triggerQueue.offer(new DelayTriggerJob(jobInfo))) {
-                        logger.error("Trigger queue is full, current size: {}", triggerQueue.size());
+                        log.error("Trigger queue is full, current size: {}", triggerQueue.size());
                     }
                 }
             }
@@ -119,18 +117,17 @@ public class JobTriggerScheduler implements DisposableBean {
             try {
                 delayJob = triggerQueue.take();
             } catch (InterruptedException e) {
-                logger.error("Take trigger queue item fail", e);
+                log.error("Take trigger queue item fail", e);
                 continue;
             }
 
-
             try {
                 // 输出日志
-                logger.info("Get job from DelayQueue, Prepare to trigger the job, job info: {}", delayJob.jobInfo());
+                log.info("Get job from DelayQueue, Prepare to trigger the job, job info: {}", delayJob.jobInfo());
                 // 真正触发任务执行
                 triggerService.trigger(delayJob.jobInfo());
             } catch (Exception e) {
-                logger.error(delayJob.jobInfo().toString() + " trigger fail", e);
+                log.error(delayJob.jobInfo().toString() + " trigger fail", e);
             }
         }
     }
@@ -140,8 +137,8 @@ public class JobTriggerScheduler implements DisposableBean {
         schedulerExecutor.shutdownNow();
         delayQueueExecutor.shutdownNow();
 
-        if (triggerQueue.size() > 0) {
-            logger.warn("JobTriggerScheduler shutdown, trigger queue size: {}", triggerQueue.size());
+        if (!triggerQueue.isEmpty()) {
+            log.warn("JobTriggerScheduler shutdown, trigger queue size: {}", triggerQueue.size());
         }
     }
 }

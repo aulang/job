@@ -65,7 +65,6 @@ public class JobAdminService {
         }
 
         try {
-            // FIXME 异常退出（没有走取消注册流程）时还是更新而不是插入，执行器就不会更新
             boolean register = registryService.register(param.getType(), param.getAppName(), param.getAddress());
             if (register) {
                 registerExecutor(param.getAppName(), param.getAppTitle(), param.getGlueTypes());

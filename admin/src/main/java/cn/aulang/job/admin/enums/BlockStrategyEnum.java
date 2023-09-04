@@ -1,10 +1,13 @@
 package cn.aulang.job.admin.enums;
 
+import lombok.Getter;
+
 /**
  * 阻塞处理策略
  *
  * @author wulang
  */
+@Getter
 public enum BlockStrategyEnum {
 
     SERIAL_EXECUTION("单机串行"),
@@ -16,10 +19,6 @@ public enum BlockStrategyEnum {
 
     BlockStrategyEnum(String title) {
         this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public static BlockStrategyEnum match(String name, BlockStrategyEnum defaultItem) {

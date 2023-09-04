@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author wulang
  */
 @RestController
-@RequestMapping("job-executor")
+@RequestMapping("/job-executor")
 public class ExecutorEndpoint implements ExecutorApi {
 
     private final JobProperties properties;
@@ -42,7 +42,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("beat")
+    @PostMapping("/beat")
     public Response<String> beat(
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
         if (incorrectAccessToken(accessToken)) {
@@ -53,7 +53,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("running")
+    @PostMapping("/running")
     public Response<Integer> running(String accessToken) {
         if (incorrectAccessToken(accessToken)) {
             return Response.fail("Incorrect access token!");
@@ -63,7 +63,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("idle-beat")
+    @PostMapping("/idle-beat")
     public Response<String> idleBeat(
             @RequestBody IdleBeatParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
@@ -75,7 +75,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("run")
+    @PostMapping("/run")
     public Response<String> run(
             @RequestBody TriggerParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
@@ -87,7 +87,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("kill")
+    @PostMapping("/kill")
     public Response<String> kill(
             @RequestBody KillParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
@@ -99,7 +99,7 @@ public class ExecutorEndpoint implements ExecutorApi {
     }
 
     @Override
-    @PostMapping("log")
+    @PostMapping("/log")
     public Response<LogResult> log(
             @RequestBody LogParam param,
             @RequestHeader(name = Constants.ACCESS_TOKEN_HEADER, required = false) String accessToken) {
