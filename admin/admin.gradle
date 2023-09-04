@@ -27,12 +27,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
-
-    implementation 'org.postgresql:postgresql:42.6.0'
-    implementation 'org.mongodb:mongo-java-driver:3.12.13'
-    implementation 'com.oracle.database.jdbc:ojdbc11:23.2.0.0'
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4'
-    implementation 'com.microsoft.sqlserver:mssql-jdbc:11.2.3.jre17'
 }
 
 tasks.register("bootRunDev") {
