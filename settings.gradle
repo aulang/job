@@ -7,6 +7,7 @@ pluginManagement {
 
 include 'core'
 include 'admin'
+include 'datax-executor'
 include 'spring-boot-starter'
 
 rootProject.name = 'al-job'

@@ -1,0 +1,19 @@
+server:
+  port: 8080
+  shutdown: graceful
+spring:
+  application:
+    name: datax-executor
+  profiles:
+    active: prod
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+  jackson:
+    default-property-inclusion: non_null
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+al-job:
+  appTitle: 数据交换执行器
+  admin-url: http://job-admin:8107
+  glue-types: DataX,Python,Shell
