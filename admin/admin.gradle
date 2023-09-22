@@ -1,5 +1,8 @@
 description = 'job-admin'
-archivesBaseName = 'job-admin'
+
+ext {
+    artifactId = 'job-admin'
+}
 
 apply plugin: 'org.springframework.boot'
 apply from: "$rootDir/gradle/docker.gradle"

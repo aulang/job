@@ -7,8 +7,8 @@ dependencies {
 
 jar {
     manifest.attributes['Implementation-Version'] = project.version
-    manifest.attributes['Implementation-Title'] = project.archivesBaseName
-    manifest.attributes['Automatic-Module-Name'] = project.archivesBaseName.replace('-', '.')
+    manifest.attributes['Implementation-Title'] = project.artifactId
+    manifest.attributes['Automatic-Module-Name'] = project.artifactId.replace('-', '.')
     manifest.attributes['Created-By'] = "${System.getProperty('java.version')} (${System.getProperty('java.specification.vendor')})"
 }
 
@@ -22,7 +22,7 @@ javadoc {
     options.use = true
     options.author = true
     options.encoding = 'UTF-8'
-    options.header = project.archivesBaseName
+    options.header = project.artifactId
     options.memberLevel = JavadocMemberLevel.PROTECTED
 
     options.addStringOption('Xdoclint:none', '-quiet')
@@ -45,7 +45,7 @@ task javadocJar(type: Jar) {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            artifactId project.archivesBaseName
+            artifactId project.artifactId
             from components.java
             artifact javadocJar
         }

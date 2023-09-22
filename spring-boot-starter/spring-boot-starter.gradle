@@ -1,5 +1,8 @@
 description = 'job-spring-boot-starter'
-archivesBaseName = 'job-spring-boot-starter'
+
+ext {
+    artifactId = 'job-spring-boot-starter'
+}
 
 apply from: "$rootDir/gradle/library-module.gradle"
 

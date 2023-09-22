@@ -1,5 +1,8 @@
 description = 'job-core'
-archivesBaseName = 'job-core'
+
+ext {
+    artifactId = 'job-core'
+}
 
 apply from: "$rootDir/gradle/library-module.gradle"
 
