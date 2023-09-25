@@ -1,6 +1,6 @@
-CREATE database if NOT EXISTS `al_job` default character set utf8mb4 collate utf8mb4_unicode_ci;
+CREATE database if NOT EXISTS `job` default character set utf8mb4 collate utf8mb4_unicode_ci;
 
-use `al_job`;
+use `job`;
 
 SET NAMES utf8mb4;
 
