@@ -1,5 +1,8 @@
 description = 'datax-executor'
-archivesBaseName = 'datax-executor'
+
+ext {
+    artifactId = 'datax-executor'
+}
 
 apply plugin: 'org.springframework.boot'
 apply from: "$rootDir/gradle/docker.gradle"
