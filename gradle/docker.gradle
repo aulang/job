@@ -6,14 +6,17 @@ jib {
         image = 'aulang/jdk'
     }
     to {
-        image = "$docker_registry/aulang/$base_name"
+        image = "$docker_registry/aulang/job"
         auth {
             username = "$docker_registry_username"
             password = "$docker_registry_password"
         }
     }
     container {
-        jvmFlags = ['-Xms512m', '-Duser.timezone=GMT+08']
+        jvmFlags = ['-server -Xms128m -Xmx512m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m',
+                    '-Djava.security.egd=file:/dev/./urandom',
+                    '-Duser.timezone=Asia/Shanghai'
+        ]
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
     allowInsecureRegistries = true
