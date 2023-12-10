@@ -73,7 +73,7 @@ public class ProcessUtils {
 
         try {
             // 杀掉进程
-            Process process = Runtime.getRuntime().exec(command);
+            Process process = new ProcessBuilder(command).start();
 
             // 结果输出
             StringBuilder builder = new StringBuilder();

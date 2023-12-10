@@ -3,7 +3,6 @@ package cn.aulang.job.executor;
 import cn.aulang.job.config.JobProperties;
 import cn.aulang.job.core.common.Constants;
 import cn.aulang.job.core.log.JobFileAppender;
-import cn.aulang.job.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -26,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class CleanLogExecutor implements DisposableBean {
 
     protected final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobCleanLogExecutor-%d").build());
+            Thread.ofVirtual().name("JobCleanLogExecutor-").factory());
 
     protected int logRetentionDays;
 

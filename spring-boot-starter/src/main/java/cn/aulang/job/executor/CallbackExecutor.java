@@ -3,7 +3,6 @@ package cn.aulang.job.executor;
 import cn.aulang.job.core.api.AdminApi;
 import cn.aulang.job.core.model.CallbackParam;
 import cn.aulang.job.core.model.Response;
-import cn.aulang.job.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.DisposableBean;
 
@@ -23,8 +22,8 @@ public class CallbackExecutor implements DisposableBean {
     protected final String accessToken;
 
     protected final LinkedBlockingQueue<CallbackParam> callbackQueue = new LinkedBlockingQueue<>();
-    protected final ExecutorService executorService = Executors.newSingleThreadExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobCallbackExecutor-%d").build());
+
+    protected final ExecutorService executorService = Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name("JobCallbackExecutor-").factory());
 
     public CallbackExecutor(AdminApi adminApi, String accessToken) {
         this.adminApi = adminApi;

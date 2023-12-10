@@ -1,6 +1,5 @@
 package cn.aulang.job.admin.scheduler;
 
-import cn.aulang.common.core.concurrent.ThreadFactoryBuilder;
 import cn.aulang.common.core.utils.SimpleDateUtils;
 import cn.aulang.job.admin.config.JobProperties;
 import cn.aulang.job.admin.service.JobLogService;
@@ -63,8 +62,7 @@ public class JobTimingScheduler implements ApplicationContextAware, DisposableBe
         if (properties.isBeatEnabled()) {
             ++threadCount;
         }
-        schedulerExecutor = Executors.newScheduledThreadPool(threadCount,
-                new ThreadFactoryBuilder().setNameFormat("JobTimingScheduler-%d").build());
+        schedulerExecutor = Executors.newScheduledThreadPool(threadCount, Thread.ofVirtual().name("JobTimingScheduler-").factory());
     }
 
     @Override

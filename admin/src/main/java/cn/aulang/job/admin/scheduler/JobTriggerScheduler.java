@@ -36,7 +36,7 @@ public class JobTriggerScheduler implements DisposableBean {
     private final ExecutorService delayQueueExecutor;
     private final DelayQueue<DelayTriggerJob> triggerQueue = new DelayQueue<>();
     private final ScheduledExecutorService schedulerExecutor = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobTriggerScheduler-%d").build());
+            Thread.ofVirtual().name("JobTriggerScheduler-").factory());
 
     @Autowired
     public JobTriggerScheduler(JobInfoService jobService, TriggerService triggerService) {

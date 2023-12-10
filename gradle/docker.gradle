@@ -4,7 +4,7 @@ jib {
     def base_name = bootJar.archiveBaseName.getOrNull()
     def base_version = bootJar.archiveVersion.getOrNull()
     from {
-        image = 'amazoncorretto:17-alpine'
+        image = 'amazoncorretto:21-alpine'
     }
     to {
         image = "$docker_registry/$rootProject.name/$base_name"
@@ -14,7 +14,7 @@ jib {
         }
     }
     container {
-        jvmFlags = ['-Xms512m', '-Duser.timezone=GMT+08']
+        jvmFlags = ['-Xms256m', '-Xmx1024m', '-Duser.timezone=GMT+08']
         creationTime = 'USE_CURRENT_TIMESTAMP'
     }
     allowInsecureRegistries = true

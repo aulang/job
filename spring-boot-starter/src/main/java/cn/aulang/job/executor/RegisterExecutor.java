@@ -6,7 +6,6 @@ import cn.aulang.job.core.common.Constants;
 import cn.aulang.job.core.enums.RegisterTypeEnum;
 import cn.aulang.job.core.model.RegisterParam;
 import cn.aulang.job.core.model.Response;
-import cn.aulang.job.thread.ThreadFactoryBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeansException;
@@ -44,7 +43,7 @@ public class RegisterExecutor implements ApplicationContextAware, InitializingBe
     protected ApplicationContext applicationContext;
 
     protected final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(
-            new ThreadFactoryBuilder().setNameFormat("JobRegisterExecutor-%d").build());
+            Thread.ofVirtual().name("JobRegisterExecutor-").factory());
 
     public RegisterExecutor(AdminApi adminApi, JobProperties properties) {
         this.adminApi = adminApi;
