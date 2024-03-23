@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class JobTriggerScheduler implements DisposableBean {
 
+    private volatile boolean exit = false;
     private final JobInfoService jobService;
     private final TriggerService triggerService;
 
@@ -109,7 +110,6 @@ public class JobTriggerScheduler implements DisposableBean {
         }
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
     private void delay() {
         while (true) {
             DelayTriggerJob delayJob;
@@ -117,8 +117,15 @@ public class JobTriggerScheduler implements DisposableBean {
             try {
                 delayJob = triggerQueue.take();
             } catch (InterruptedException e) {
-                log.error("Take trigger queue item fail", e);
-                continue;
+                if (exit) {
+                    // 程序退出
+                    log.info("Received process exit signal");
+                    break;
+                } else {
+                    // 线程异常中断，不响应
+                    log.error("Take trigger queue item fail", e);
+                    continue;
+                }
             }
 
             try {
@@ -134,6 +141,8 @@ public class JobTriggerScheduler implements DisposableBean {
 
     @Override
     public void destroy() {
+        exit = true;
+
         schedulerExecutor.shutdownNow();
         delayQueueExecutor.shutdownNow();
 

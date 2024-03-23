@@ -20,6 +20,7 @@ public class CallbackExecutor implements DisposableBean {
 
     protected final AdminApi adminApi;
     protected final String accessToken;
+    private volatile boolean exit = false;
 
     protected final LinkedBlockingQueue<CallbackParam> callbackQueue = new LinkedBlockingQueue<>();
 
@@ -38,7 +39,6 @@ public class CallbackExecutor implements DisposableBean {
         }
     }
 
-    @SuppressWarnings("InfiniteLoopStatement")
     protected void callback() {
         while (true) {
             try {
@@ -48,6 +48,15 @@ public class CallbackExecutor implements DisposableBean {
                 if (!result.isSuccess()) {
                     log.error("Executor callback fail: {}", result.getMessage());
                 }
+            } catch (InterruptedException e) {
+                if (exit) {
+                    // 程序退出
+                    log.info("Received process exit signal");
+                    break;
+                } else {
+                    // 线程异常中断，不响应
+                    log.error("Take callback queue item fail", e);
+                }
             } catch (Exception e) {
                 log.error("Take callback queue item fail", e);
             }
@@ -56,6 +65,8 @@ public class CallbackExecutor implements DisposableBean {
 
     @Override
     public void destroy() {
+        exit = true;
+
         executorService.shutdownNow();
 
         if (!callbackQueue.isEmpty()) {

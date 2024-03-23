@@ -1,9 +1,9 @@
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
-    id 'org.springframework.boot' version '3.2.0' apply false
+    id 'org.springframework.boot' version '3.2.4' apply false
     id 'io.spring.dependency-management' version '1.1.4' apply false
-    id 'com.google.cloud.tools.jib' version '3.4.0' apply false
+    id 'com.google.cloud.tools.jib' version '3.4.1' apply false
 }
 
 ext {
@@ -27,12 +27,12 @@ allprojects {
         }
 
         dependencies {
-            dependencySet(group: 'org.slf4j', version: '2.0.9') {
+            dependencySet(group: 'org.slf4j', version: '2.0.12') {
                 entry 'slf4j-api'
                 entry 'jcl-over-slf4j'
             }
 
-            dependencySet(group: 'com.fasterxml.jackson.core', version: '2.16.0') {
+            dependencySet(group: 'com.fasterxml.jackson.core', version: '2.17.0') {
                 entry 'jackson-core'
                 entry 'jackson-databind'
                 entry 'jackson-annotations'
@@ -43,12 +43,12 @@ allprojects {
 
             dependency 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
-            dependency 'com.mysql:mysql-connector-j:8.2.0'
+            dependency 'com.mysql:mysql-connector-j:8.3.0'
 
-            dependency 'org.projectlombok:lombok:1.18.30'
+            dependency 'org.projectlombok:lombok:1.18.32'
 
-            dependency 'net.java.dev.jna:jna:5.13.0'
-            dependency 'cn.hutool:hutool-crypto:5.8.23'
+            dependency 'net.java.dev.jna:jna:5.14.0'
+            dependency 'cn.hutool:hutool-crypto:5.8.26'
 
             dependency 'cn.aulang.common:al-web:1.0.0'
         }
