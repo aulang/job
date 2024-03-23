@@ -53,7 +53,7 @@ public class LoadBalancerAdminClient extends RetryAdminClient {
             }
             return addresses.get(value % size);
         } else {
-            return addresses.get(0);
+            return addresses.getFirst();
         }
     }
 

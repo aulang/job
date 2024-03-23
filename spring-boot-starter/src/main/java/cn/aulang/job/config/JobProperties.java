@@ -35,7 +35,7 @@ public class JobProperties {
     private int retry = 3;
 
     /**
-     * 是否启用服务第负载均衡
+     * 是否启用服务端负载均衡
      */
     private boolean loadBalance = false;
 
