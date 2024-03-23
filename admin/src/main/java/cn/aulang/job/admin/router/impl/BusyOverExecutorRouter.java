@@ -24,7 +24,7 @@ public class BusyOverExecutorRouter implements ExecutorRouter {
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
         if (addressList.size() == 1) {
-            return Response.success(addressList.get(0));
+            return Response.success(addressList.getFirst());
         }
 
         ExecutorClient executorClient = new ExecutorClient();
@@ -45,7 +45,7 @@ public class BusyOverExecutorRouter implements ExecutorRouter {
 
         List<String> addresses = treeMap.firstEntry().getValue();
         if (addresses.size() == 1) {
-            String address = addresses.get(0);
+            String address = addresses.getFirst();
             return Response.success(address);
         } else {
             // 随机选一个

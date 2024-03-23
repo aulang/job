@@ -14,6 +14,6 @@ public class LastExecutorRouter implements ExecutorRouter {
 
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
-        return Response.success(addressList.get(addressList.size() - 1));
+        return Response.success(addressList.getLast());
     }
 }

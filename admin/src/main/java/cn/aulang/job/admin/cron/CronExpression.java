@@ -18,6 +18,9 @@
 
 package cn.aulang.job.admin.cron;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -242,8 +245,15 @@ public final class CronExpression implements Serializable {
         dayMap.put("SAT", 7);
     }
 
+    @Getter
     private final String cronExpression;
 
+    /**
+     * -- SETTER --
+     * Sets the time zone for which  this <code>CronExpression</code>
+     * will be resolved.
+     */
+    @Setter
     private TimeZone timeZone = null;
     private transient TreeSet<Integer> seconds;
     private transient TreeSet<Integer> minutes;
@@ -387,14 +397,6 @@ public final class CronExpression implements Serializable {
         }
 
         return timeZone;
-    }
-
-    /**
-     * Sets the time zone for which  this <code>CronExpression</code>
-     * will be resolved.
-     */
-    public void setTimeZone(TimeZone timeZone) {
-        this.timeZone = timeZone;
     }
 
     /**
@@ -829,10 +831,6 @@ public final class CronExpression implements Serializable {
         return i;
     }
 
-    public String getCronExpression() {
-        return cronExpression;
-    }
-
     public String getExpressionSummary() {
         return "seconds: " +
                 getExpressionSetSummary(seconds) +
@@ -1126,7 +1124,7 @@ public final class CronExpression implements Serializable {
 
             // get second.................................................
             st = seconds.tailSet(sec);
-            if (st.size() != 0) {
+            if (!st.isEmpty()) {
                 sec = st.first();
             } else {
                 sec = seconds.first();
@@ -1141,7 +1139,7 @@ public final class CronExpression implements Serializable {
 
             // get minute.................................................
             st = minutes.tailSet(min);
-            if (st.size() != 0) {
+            if (!st.isEmpty()) {
                 t = min;
                 min = st.first();
             } else {
@@ -1162,7 +1160,7 @@ public final class CronExpression implements Serializable {
 
             // get hour...................................................
             st = hours.tailSet(hr);
-            if (st.size() != 0) {
+            if (!st.isEmpty()) {
                 t = hr;
                 hr = st.first();
             } else {
@@ -1277,7 +1275,7 @@ public final class CronExpression implements Serializable {
                         day = daysOfMonth.first();
                         mon++;
                     }
-                } else if (st.size() != 0) {
+                } else if (!st.isEmpty()) {
                     t = day;
                     day = st.first();
                     // make sure we don't over-run a short month, such as february
@@ -1391,7 +1389,7 @@ public final class CronExpression implements Serializable {
                     int dow = daysOfWeek.first(); // desired
                     // d-o-w
                     st = daysOfWeek.tailSet(cDow);
-                    if (st.size() > 0) {
+                    if (!st.isEmpty()) {
                         dow = st.first();
                     }
 
@@ -1444,7 +1442,7 @@ public final class CronExpression implements Serializable {
 
             // get month...................................................
             st = months.tailSet(mon);
-            if (st.size() != 0) {
+            if (!st.isEmpty()) {
                 t = mon;
                 mon = st.first();
             } else {
@@ -1470,7 +1468,7 @@ public final class CronExpression implements Serializable {
 
             // get year...................................................
             st = years.tailSet(year);
-            if (st.size() != 0) {
+            if (!st.isEmpty()) {
                 t = year;
                 year = st.first();
             } else {

@@ -22,7 +22,7 @@ public class FailoverExecutorRouter implements ExecutorRouter {
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
         if (addressList.size() == 1) {
-            return Response.success(addressList.get(0));
+            return Response.success(addressList.getFirst());
         }
 
         ExecutorClient executorClient = new ExecutorClient();

@@ -15,7 +15,7 @@ public class RandomExecutorRouter implements ExecutorRouter {
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
         if (addressList.size() == 1) {
-            return Response.success(addressList.get(0));
+            return Response.success(addressList.getFirst());
         }
 
         String address = addressList.get(ThreadLocalRandom.current().nextInt(addressList.size()));

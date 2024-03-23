@@ -42,7 +42,7 @@ public class RoundExecutorRouter implements ExecutorRouter {
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
         if (addressList.size() == 1) {
-            return Response.success(addressList.get(0));
+            return Response.success(addressList.getFirst());
         }
 
         String address = addressList.get(count(triggerParam.getJobId()) % addressList.size());

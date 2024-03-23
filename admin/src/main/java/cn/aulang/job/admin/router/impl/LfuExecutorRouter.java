@@ -43,7 +43,7 @@ public class LfuExecutorRouter implements ExecutorRouter {
         List<Map.Entry<String, Integer>> lfuItemList = new ArrayList<>(lfuItem.entrySet());
         lfuItemList.sort(Map.Entry.comparingByValue());
 
-        Map.Entry<String, Integer> entry = lfuItemList.get(0);
+        Map.Entry<String, Integer> entry = lfuItemList.getFirst();
         entry.setValue(entry.getValue() + 1);
 
         return entry.getKey();
@@ -52,7 +52,7 @@ public class LfuExecutorRouter implements ExecutorRouter {
     @Override
     public Response<String> route(TriggerParam triggerParam, List<String> addressList) {
         if (addressList.size() == 1) {
-            return Response.success(addressList.get(0));
+            return Response.success(addressList.getFirst());
         }
 
         String address = route(triggerParam.getJobId(), addressList);
